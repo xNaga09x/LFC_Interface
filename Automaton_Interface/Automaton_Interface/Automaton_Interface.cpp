@@ -74,15 +74,17 @@ void Automaton_Interface::mouseReleaseEvent(QMouseEvent* e)
                 }
                 else
                 {
+                    QString label;
+                    label = openTextBox();
                     // Aici se face verificarea pentru existenta unui arc cu acela?i sens între aceleasi doua noduri
                     if (!graf.arcExists(firstNode, n))
                     {
-                        graf.addArch(firstNode, n);
+                        graf.addArch(firstNode, n, label);
                     }
                     else
                     {
                         // Adaugare arc care se intoarce la acelasi nod
-                        graf.addArch(n, firstNode);
+                        graf.addArch(n, firstNode,label);
                     }
                     firstNode = nullptr;
                 }
@@ -212,7 +214,7 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
                 //Reprezinta pozitia unui obiect intr-o fereastra(acesta il folosesc pentru a insera elementele)
             int index = std::distance(arches.begin(), std::find(arches.begin(), arches.end(), a));
             QRect elementRect(middle.x() - 5, elementY + 15, 10, 10);//crearea patratului coordonatele de pe stanga si dreapta,latimea si inaltimea dreptunghiului
-            p.drawText(elementRect, Qt::AlignCenter, QString::number(index));//element);
+            p.drawText(elementRect, Qt::AlignCenter, a->getLabel());//element);
             elementY += 15;//Spatiile intre elemente
             //}
         }
@@ -258,6 +260,7 @@ void Automaton_Interface::mousePressEvent(QMouseEvent* e) {
             }
         }
 }
+
 void Automaton_Interface::mouseMoveEvent(QMouseEvent* e) {
     if (nodeIsBeingDragged) {
         // Daca un nod este in miscare, actualizati pozitia acestuia
@@ -268,4 +271,15 @@ void Automaton_Interface::mouseMoveEvent(QMouseEvent* e) {
         lastMousePos = e->pos();
         update();  // Redesenati fereastra pentru a reflecta noua pozitie
     }
+}
+
+QString Automaton_Interface::openTextBox()
+{
+    TextBox inputDialog;
+    QString labelEnt;
+    if (inputDialog.exec() == QDialog::Accepted)
+    {
+        labelEnt = inputDialog.getEnteredText();
+    }
+    return labelEnt;
 }

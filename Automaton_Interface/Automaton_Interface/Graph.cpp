@@ -78,6 +78,16 @@ void Graph::addArch(Node* firstNode, Node* secondNode)
         arches.push_back(arc);
     }
 }
+
+void Graph::addArch(Node* firstNode, Node* secondNode, QString& label)
+{
+    if (firstNode && secondNode)
+    {
+        Arch* arch = new Arch(firstNode, secondNode, label);
+        arches.push_back(arch);
+    }
+}
+
 void Graph::removeNode(Node* node)
 {
     // Stergerea nodului din vector

@@ -16,6 +16,7 @@ public:
     std::vector<Arch*>& getArches();
     void addNode(QPoint p);
     //    void addArch(Arch *arc);
+    void addArch(Node* firstNode, Node* secondNode, QString& label);
     void addArch(Node* firstNode, Node* secondNode);
     bool isArcUnique(Node* source, Node* target);
     bool arcExists(Node* node1, Node* node2) const;

@@ -92,6 +92,7 @@
     <ClCompile Include="Arch.cpp" />
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="Node.cpp" />
+    <ClCompile Include="TextBox.cpp" />
     <QtRcc Include="Automaton_Interface.qrc" />
     <QtUic Include="Automaton_Interface.ui" />
     <QtMoc Include="Automaton_Interface.h" />
@@ -102,6 +103,7 @@
     <ClInclude Include="Arch.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="Node.h" />
+    <QtMoc Include="TextBox.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

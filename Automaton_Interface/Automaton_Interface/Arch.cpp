@@ -6,6 +6,11 @@ Arch::Arch()
 	secondNode = nullptr;
 }
 
+Arch::Arch(Node* firstNode, Node* secondNode, const QString& label)
+	: firstNode(firstNode), secondNode(secondNode), label(label)
+{
+}
+
 QString Arch::getLabel() const
 {
 	return label;

@@ -19,6 +19,7 @@ public:
         : firstNode(new Node(*(other.firstNode))), secondNode(new Node(*(other.secondNode)))
     {
     }
+    Arch(Node* firstNode, Node* secondNode, const QString& label);
 
     Node* getFirstNode() { return firstNode; }
     Node* getSecondNode() { return secondNode; }

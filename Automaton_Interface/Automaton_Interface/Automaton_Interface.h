@@ -18,6 +18,8 @@
 #include<QMessageBox>
 #include<QPainterPath>
 #include<QTransform>
+#include "TextBox.h"
+
 class Automaton_Interface : public QMainWindow
 {
     Q_OBJECT
@@ -29,6 +31,7 @@ public:
     virtual void paintEvent(QPaintEvent* e);//iar aici este de ce afiseaza
     virtual void mousePressEvent(QMouseEvent* e);
     virtual void mouseMoveEvent(QMouseEvent* e);
+    QString openTextBox();
 public slots:
     void toggleDeleteMode();  // Slot pentru activarea/dezactivarea modului de stergere
     void on_deleteButton_clicked();  // Slot pentru gestionarea evenimentului de clic pe buton
