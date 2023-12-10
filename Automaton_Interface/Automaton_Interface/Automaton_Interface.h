@@ -19,6 +19,13 @@
 #include<QPainterPath>
 #include<QTransform>
 #include "TextBox.h"
+#include <QFileDialog>
+#include <QFile>
+#include <fstream>
+#include <vector>
+#include <algorithm>
+
+#include "AFD.h"
 
 class Automaton_Interface : public QMainWindow
 {
@@ -35,7 +42,13 @@ public:
 public slots:
     void toggleDeleteMode();  // Slot pentru activarea/dezactivarea modului de stergere
     void on_deleteButton_clicked();  // Slot pentru gestionarea evenimentului de clic pe buton
-
+    void on_addFromFileButton_clicked(); // Slot pentru adaugarea unui automat dintr-un fisier
+    void on_saveToFileButton_clicked(); // Slot pentru salvarea unui automat intr-un fisier
+    //Slot-uri pentru tipul obiectului (!poate puse intr-un pop up inainte de a incepe desenarea & facut enum pt type)
+    void on_afdRadioButton_clicked();
+    void on_afnRadioButton_clicked();
+    void on_afnlRadioButton_clicked();
+    void on_apdRadioButton_clicked();
 
 private:
     Ui::Automaton_InterfaceClass ui;
@@ -46,4 +59,6 @@ private:
     Node* draggedNode;        // Nodul care este tras
     QPoint lastMousePos;      // Pozitia ultimei pozitii a mouse-ului in timpul tragerii
     bool deleteMode;  // Variabila pentru a tine evidenta starii de stergere
+    uint32_t automatonType; // Variabila pentru determinarea tipului de obiect generat (doar pt scriere in fisier)
+    AFD automaton;
 };

@@ -21,6 +21,9 @@
       <UniqueIdentifier>{639EADAA-A684-42e4-A9AD-28FC9BCB8F7C}</UniqueIdentifier>
       <Extensions>ts</Extensions>
     </Filter>
+    <Filter Include="Automatons">
+      <UniqueIdentifier>{f5965bc9-e351-4752-a69c-68f4d69b1d5e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="Automaton_Interface.qrc">
@@ -52,6 +55,12 @@
     <ClCompile Include="TextBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AFD.cpp">
+      <Filter>Automatons</Filter>
+    </ClCompile>
+    <ClCompile Include="AFN.cpp">
+      <Filter>Automatons</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Node.h">
@@ -62,6 +71,12 @@
     </ClInclude>
     <ClInclude Include="Graph.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AFD.h">
+      <Filter>Automatons</Filter>
+    </ClInclude>
+    <ClInclude Include="AFN.h">
+      <Filter>Automatons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

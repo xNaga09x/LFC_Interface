@@ -89,6 +89,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AFD.cpp" />
+    <ClCompile Include="AFN.cpp" />
     <ClCompile Include="Arch.cpp" />
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="Node.cpp" />
@@ -100,6 +102,8 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AFD.h" />
+    <ClInclude Include="AFN.h" />
     <ClInclude Include="Arch.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="Node.h" />

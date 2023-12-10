@@ -1,4 +1,5 @@
 #include "Automaton_Interface.h"
+#include "qdebug.h" //for testing to be removed
 
 Automaton_Interface::Automaton_Interface(QWidget* parent)
     : QMainWindow(parent)
@@ -10,6 +11,7 @@ Automaton_Interface::Automaton_Interface(QWidget* parent)
     nodeIsBeingDragged = false;
     draggedNode = nullptr;
     lastMousePos;
+    automatonType = -1;
     //connect(ui.deleteButton, &QPushButton::clicked, this, &AutomatonInterface::onButtonClicked);
 }
 
@@ -27,6 +29,100 @@ void Automaton_Interface::on_deleteButton_clicked()
     toggleDeleteMode();
 }
 
+void Automaton_Interface::on_addFromFileButton_clicked()
+{
+    //Deschide file explorer-ul cu QFileDialog si pune absolute path-ul file-ului ales intr-un QString
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Automaton"), "C:/", tr("Image Files(*.txt *.in)"));
+    //Transforma QString to std::string
+    std::string stringFileName = fileName.toStdString();
+    //Deschide fisierul ales si citeste din el
+    std::ifstream file(stringFileName);
+    uint32_t type;
+    file >> type;
+    switch (type)
+    {
+    case 0: //AFD
+        automatonType = 0;
+        automaton.Read(file);
+    }
+    //In functie de type se apeleaza crearea obiectului automat
+    //Deseneaza automatul citit pe ecran
+    file.close();
+}
+
+void Automaton_Interface::on_saveToFileButton_clicked()
+{
+    //Deschide file explorer-ul cu QFileDialog si pune absolute path-ul file-ului ales intr-un QString
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Automaton"), "C:/", tr("Image Files(*.txt *.in)"));
+    //Transforma QString to std::string
+    std::string stringFileName = fileName.toStdString();
+    //Deschide fisierul ales si salveaza automatul in el
+    std::ofstream file(stringFileName);
+    automaton.printToFile(file);
+    file.close();
+}
+
+void Automaton_Interface::on_afdRadioButton_clicked()
+{
+    automatonType = 1;
+    //momentan o sa cred utilizatorul pe cuvant cand zice ca a desenat un afd
+    //dar putem implementa si verificari inainte sa se creeze obiectul
+    std::vector<int> Q;
+    std::vector<char> Sum;
+    std::vector<std::tuple<int, char, int>> Delta;
+    uint16_t q0;
+    std::vector<int> F;
+
+    std::vector<Node*> nodes = graf.getNodes();
+    q0 = nodes[0]->getValue(); //se schimba cand implementam modificarea starii initiale/finale
+    //menu pop up right click on node in care setezi campurile de isInitialState/ isFinalState
+    F.emplace_back(q0); //dummy for testing, remake after menu
+    for (auto& node : nodes)
+    {
+        Q.emplace_back(node->getValue());
+    }
+    std::vector<Arch*> arches = graf.getArches();
+    uint32_t startState;
+    char transitionSymbol;
+    uint32_t finalState;
+    for (auto& arch : arches)
+    {
+        //firstNode -> starea curenta a automatului
+        //label -> simbolul citit de pe banda de intrare
+        //secondNode -> starea in care ajunge automatul dupa citire
+        startState = arch->getFirstNode()->getValue();
+        transitionSymbol = arch->getLabel().toStdString()[0];
+        finalState = arch->getSecondNode()->getValue();
+        if (std::find(Sum.begin(), Sum.end(), transitionSymbol) == Sum.end())
+            Sum.emplace_back(transitionSymbol);
+        Delta.emplace_back(std::make_tuple( startState, transitionSymbol, finalState ));
+    }
+    automaton.setDelta(Delta);
+    automaton.setSum(Sum);
+    automaton.setQ(Q);
+    automaton.setF(F);
+    automaton.setq0(q0);
+    automaton.setSizeDelta(Delta.size());
+    automaton.setSizeF(F.size());
+    automaton.setSizeQ(Q.size());
+    automaton.setSizeSum(Sum.size());
+}
+
+void Automaton_Interface::on_afnRadioButton_clicked()
+{
+    automatonType = 2;
+}
+
+void Automaton_Interface::on_afnlRadioButton_clicked()
+{
+    automatonType = 3;
+}
+
+void Automaton_Interface::on_apdRadioButton_clicked()
+{
+    automatonType = 4;
+}
+
 void Automaton_Interface::mouseReleaseEvent(QMouseEvent* e)
 {
     if (nodeIsBeingDragged) {
@@ -35,13 +131,13 @@ void Automaton_Interface::mouseReleaseEvent(QMouseEvent* e)
     }
     if (e->button() == Qt::RightButton)
     {
-        // Verifica?i suprapunerea cu nodurile existente
+        // Verificati suprapunerea cu nodurile existente
         bool overlapping = false;
         for (Node* n : graf.getNodes())
         {
             Node tempNode;
-            tempNode.setCoordinate(e->pos()); // Ini?ializare coordonate
-            tempNode.setValue(10); // Ini?ializare raz? (în acest exemplu, 10 de unit??i)
+            tempNode.setCoordinate(e->pos()); // Initializare coordonate
+            tempNode.setValue(10); // Initializare raza (in acest exemplu, 10 de unitati)
 
             if (n->isOverlapping(tempNode))
             {

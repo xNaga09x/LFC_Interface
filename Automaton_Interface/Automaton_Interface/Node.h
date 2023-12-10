@@ -8,6 +8,8 @@ class Node
     QPoint coordinate;
     int x;
     int y;
+    bool isInitialState;
+    bool isFinalState;
 public:
     Node();
     void setX(int x) { this->x = x; }

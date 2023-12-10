@@ -8,6 +8,8 @@ Node::Node()
     value = 0;
     x = -1;
     y = -1;
+    isInitialState = false;
+    isFinalState = false;
 }
 
 void Node::setValue(int value)

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>600</width>
-    <height>400</height>
+    <width>774</width>
+    <height>504</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,13 +27,91 @@
      <string>DeleteNodes</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="addFromFileButton">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>91</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Open from file</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="saveToFileButton">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>80</y>
+      <width>75</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Save to file</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="afdRadioButton">
+    <property name="geometry">
+     <rect>
+      <x>680</x>
+      <y>10</y>
+      <width>89</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>AFD</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="afnRadioButton">
+    <property name="geometry">
+     <rect>
+      <x>680</x>
+      <y>40</y>
+      <width>89</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>AFN</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="afnlRadioButton">
+    <property name="geometry">
+     <rect>
+      <x>680</x>
+      <y>70</y>
+      <width>89</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>AFN-lambda</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="apdRaduiButton">
+    <property name="geometry">
+     <rect>
+      <x>680</x>
+      <y>100</y>
+      <width>89</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>APD</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>600</width>
+     <width>774</width>
      <height>22</height>
     </rect>
    </property>
