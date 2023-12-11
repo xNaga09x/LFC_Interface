@@ -8,8 +8,8 @@ class Node
     QPoint coordinate;
     int x;
     int y;
-    bool isInitialState;
-    bool isFinalState;
+    bool InitialState;
+    bool FinalState;
 public:
     Node();
     void setX(int x) { this->x = x; }
@@ -31,6 +31,10 @@ public:
     {
         return (value == other.value) && (coordinate == other.coordinate);
     }
+    void setFinalState(bool state);
+    const bool getFinalState();
+    void setInitialState(bool state);
+    const bool getInitialState();
 };
 
 #endif // NODE_H

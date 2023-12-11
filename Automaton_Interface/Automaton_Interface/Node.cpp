@@ -8,8 +8,8 @@ Node::Node()
     value = 0;
     x = -1;
     y = -1;
-    isInitialState = false;
-    isFinalState = false;
+    InitialState = false;
+    FinalState = false;
 }
 
 void Node::setValue(int value)
@@ -45,4 +45,24 @@ bool Node::isOverlapping(const Node& other) const
     int radiusSum = 20; // Suma razelor nodurilor (in acest exemplu, 20 de unitati)
 
     return distance <= radiusSum;
+}
+
+void Node::setFinalState(bool state)
+{
+    FinalState = state;
+}
+
+const bool Node::getFinalState()
+{
+    return FinalState;
+}
+
+void Node::setInitialState(bool state)
+{
+    InitialState = state;
+}
+
+const bool Node::getInitialState()
+{
+    return InitialState;
 }

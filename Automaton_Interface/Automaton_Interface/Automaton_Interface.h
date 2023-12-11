@@ -40,8 +40,9 @@ public:
     virtual void mouseMoveEvent(QMouseEvent* e);
     QString openTextBox();
 public slots:
-    void toggleDeleteMode();  // Slot pentru activarea/dezactivarea modului de stergere
     void on_deleteButton_clicked();  // Slot pentru gestionarea evenimentului de clic pe buton
+    void on_finalButton_clicked();  // Slot pentru gestionarea evenimentului de clic pe buton
+    void on_dragButton_clicked();  // Slot pentru gestionarea evenimentului de clic pe buton
     void on_addFromFileButton_clicked(); // Slot pentru adaugarea unui automat dintr-un fisier
     void on_saveToFileButton_clicked(); // Slot pentru salvarea unui automat intr-un fisier
     //Slot-uri pentru tipul obiectului (!poate puse intr-un pop up inainte de a incepe desenarea & facut enum pt type)
@@ -58,7 +59,10 @@ private:
     bool nodeIsBeingDragged;  // Folosit pentru a verifica daca un nod este în miscare
     Node* draggedNode;        // Nodul care este tras
     QPoint lastMousePos;      // Pozitia ultimei pozitii a mouse-ului in timpul tragerii
-    bool deleteMode;  // Variabila pentru a tine evidenta starii de stergere
     uint32_t automatonType; // Variabila pentru determinarea tipului de obiect generat (doar pt scriere in fisier)
     AFD automaton;
+
+    bool dragMode;
+    bool finalMode;
+    bool deleteMode;  // Variabila pentru a tine evidenta starii de stergere
 };

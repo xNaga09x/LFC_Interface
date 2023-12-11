@@ -17,21 +17,21 @@
    <widget class="QPushButton" name="deleteButton">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>20</y>
+      <x>0</x>
+      <y>60</y>
       <width>81</width>
-      <height>21</height>
+      <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>DeleteNodes</string>
+     <string>Delete Nodes</string>
     </property>
    </widget>
    <widget class="QPushButton" name="addFromFileButton">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>50</y>
+      <x>0</x>
+      <y>0</y>
       <width>91</width>
       <height>24</height>
      </rect>
@@ -43,8 +43,8 @@
    <widget class="QPushButton" name="saveToFileButton">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>80</y>
+      <x>90</x>
+      <y>0</y>
       <width>75</width>
       <height>24</height>
      </rect>
@@ -57,7 +57,7 @@
     <property name="geometry">
      <rect>
       <x>680</x>
-      <y>10</y>
+      <y>0</y>
       <width>89</width>
       <height>20</height>
      </rect>
@@ -70,7 +70,7 @@
     <property name="geometry">
      <rect>
       <x>680</x>
-      <y>40</y>
+      <y>20</y>
       <width>89</width>
       <height>20</height>
      </rect>
@@ -83,7 +83,7 @@
     <property name="geometry">
      <rect>
       <x>680</x>
-      <y>70</y>
+      <y>40</y>
       <width>89</width>
       <height>20</height>
      </rect>
@@ -96,13 +96,39 @@
     <property name="geometry">
      <rect>
       <x>680</x>
-      <y>100</y>
+      <y>60</y>
       <width>89</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
      <string>APD</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="finalButton">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>30</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Set Final Nodes</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="dragButton">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>90</y>
+      <width>75</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Drag Nodes</string>
     </property>
    </widget>
   </widget>

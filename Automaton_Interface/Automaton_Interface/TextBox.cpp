@@ -20,5 +20,6 @@ TextBox::TextBox(QWidget* parent)
 
 QString TextBox::getEnteredText()
 {
+    if (m_lineEdit->text() == "lambda")return "\u03BB";
     return m_lineEdit->text();
 }
