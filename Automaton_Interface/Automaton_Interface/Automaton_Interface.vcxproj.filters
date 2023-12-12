@@ -61,6 +61,12 @@
     <ClCompile Include="AFN.cpp">
       <Filter>Automatons</Filter>
     </ClCompile>
+    <ClCompile Include="APD.cpp">
+      <Filter>Automatons</Filter>
+    </ClCompile>
+    <ClCompile Include="Prod.cpp">
+      <Filter>Automatons</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Node.h">
@@ -76,6 +82,12 @@
       <Filter>Automatons</Filter>
     </ClInclude>
     <ClInclude Include="AFN.h">
+      <Filter>Automatons</Filter>
+    </ClInclude>
+    <ClInclude Include="APD.h">
+      <Filter>Automatons</Filter>
+    </ClInclude>
+    <ClInclude Include="Prod.h">
       <Filter>Automatons</Filter>
     </ClInclude>
   </ItemGroup>

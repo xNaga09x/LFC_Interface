@@ -330,7 +330,7 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 			QRect elementRect(middle.x() - 5, elementY + 15, 10, 10);//crearea patratului coordonatele de pe stanga si dreapta,latimea si inaltimea dreptunghiului
 			p.drawText(elementRect, Qt::AlignCenter, a->getLabel());//element);
 			elementY += 15;//Spatiile intre elemente
-
+			
 			//for (Arch* arch : graf.getArches())
 			//{
 			//	if (arch->getFirstNode() == a->getSecondNode() && a->getFirstNode() == arch->getSecondNode())

@@ -91,9 +91,11 @@
   <ItemGroup>
     <ClCompile Include="AFD.cpp" />
     <ClCompile Include="AFN.cpp" />
+    <ClCompile Include="APD.cpp" />
     <ClCompile Include="Arch.cpp" />
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="Node.cpp" />
+    <ClCompile Include="Prod.cpp" />
     <ClCompile Include="TextBox.cpp" />
     <QtRcc Include="Automaton_Interface.qrc" />
     <QtUic Include="Automaton_Interface.ui" />
@@ -104,9 +106,11 @@
   <ItemGroup>
     <ClInclude Include="AFD.h" />
     <ClInclude Include="AFN.h" />
+    <ClInclude Include="APD.h" />
     <ClInclude Include="Arch.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="Node.h" />
+    <ClInclude Include="Prod.h" />
     <QtMoc Include="TextBox.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
