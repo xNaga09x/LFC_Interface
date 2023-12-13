@@ -91,6 +91,7 @@
   <ItemGroup>
     <ClCompile Include="AFD.cpp" />
     <ClCompile Include="AFN.cpp" />
+    <ClCompile Include="AFN_lambda.cpp" />
     <ClCompile Include="APD.cpp" />
     <ClCompile Include="Arch.cpp" />
     <ClCompile Include="Graph.cpp" />
@@ -106,6 +107,7 @@
   <ItemGroup>
     <ClInclude Include="AFD.h" />
     <ClInclude Include="AFN.h" />
+    <ClInclude Include="AFN_lambda.h" />
     <ClInclude Include="APD.h" />
     <ClInclude Include="Arch.h" />
     <ClInclude Include="Graph.h" />
