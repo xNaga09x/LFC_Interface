@@ -24,6 +24,7 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
+#include<set>
 
 #include "AFD.h"
 
