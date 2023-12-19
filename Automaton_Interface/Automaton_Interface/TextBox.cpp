@@ -6,7 +6,7 @@ TextBox::TextBox(QWidget* parent)
     setWindowTitle("Input Dialog");
 
     m_lineEdit = new QLineEdit(this);
-    m_lineEdit->setPlaceholderText("Introduceți litera:");
+    m_lineEdit->setPlaceholderText("Introduceți valoare:");
 
     QPushButton* okButton = new QPushButton("OK", this);
     connect(okButton, &QPushButton::clicked, this, &TextBox::accept);
@@ -20,6 +20,6 @@ TextBox::TextBox(QWidget* parent)
 
 QString TextBox::getEnteredText()
 {
-    if (m_lineEdit->text() == "lambda")return "\u03BB";
+    if (m_lineEdit->text() == "`")return "\u03BB";
     return m_lineEdit->text();
 }

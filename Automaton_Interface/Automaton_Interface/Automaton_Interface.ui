@@ -92,7 +92,7 @@
      <string>AFN-lambda</string>
     </property>
    </widget>
-   <widget class="QRadioButton" name="apdRaduiButton">
+   <widget class="QRadioButton" name="apdRadioButton">
     <property name="geometry">
      <rect>
       <x>680</x>

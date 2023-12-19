@@ -93,6 +93,7 @@
     <ClCompile Include="AFN.cpp" />
     <ClCompile Include="AFN_lambda.cpp" />
     <ClCompile Include="APD.cpp" />
+    <ClCompile Include="APDArch.cpp" />
     <ClCompile Include="Arch.cpp" />
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="Node.cpp" />
@@ -109,6 +110,7 @@
     <ClInclude Include="AFN.h" />
     <ClInclude Include="AFN_lambda.h" />
     <ClInclude Include="APD.h" />
+    <ClInclude Include="APDArch.h" />
     <ClInclude Include="Arch.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="Node.h" />

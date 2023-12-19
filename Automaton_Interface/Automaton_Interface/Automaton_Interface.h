@@ -66,4 +66,5 @@ private:
     bool dragMode;
     bool finalMode;
     bool deleteMode;  // Variabila pentru a tine evidenta starii de stergere
+    bool APDMode;
 };

@@ -29,6 +29,11 @@ std::vector<Arch*>& Graph::getArches()
     return arches;
 }
 
+std::vector<APDArch*>& Graph::getAPDArches()
+{
+    return apd_arches;
+}
+
 void Graph::addNode(QPoint p)
 {
     Node* n = new Node;
@@ -85,6 +90,15 @@ void Graph::addArch(Node* firstNode, Node* secondNode, QString& label)
     {
         Arch* arch = new Arch(firstNode, secondNode, label);
         arches.push_back(arch);
+    }
+}
+
+void Graph::addAPDArch(Node* firstNode, Node* secondNode, std::vector<QString>& labels)
+{
+    if (firstNode && secondNode)
+    {
+        APDArch* arch = new APDArch(firstNode, secondNode, labels);
+        apd_arches.push_back(arch);
     }
 }
 

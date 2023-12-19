@@ -70,6 +70,9 @@
     <ClCompile Include="AFN_lambda.cpp">
       <Filter>Automatons</Filter>
     </ClCompile>
+    <ClCompile Include="APDArch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Node.h">
@@ -95,6 +98,9 @@
     </ClInclude>
     <ClInclude Include="AFN_lambda.h">
       <Filter>Automatons</Filter>
+    </ClInclude>
+    <ClInclude Include="APDArch.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

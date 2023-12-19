@@ -15,6 +15,7 @@ Automaton_Interface::Automaton_Interface(QWidget* parent)
 	finalMode = false;
 	deleteMode = false;
 	dragMode = false;
+	APDMode = false;
 	//connect(ui.deleteButton, &QPushButton::clicked, this, &AutomatonInterface::onButtonClicked);
 }
 
@@ -128,6 +129,7 @@ void Automaton_Interface::on_afnlRadioButton_clicked()
 void Automaton_Interface::on_apdRadioButton_clicked()
 {
 	automatonType = 4;
+	APDMode = !APDMode;
 }
 
 void Automaton_Interface::mouseReleaseEvent(QMouseEvent* e)
@@ -170,7 +172,7 @@ void Automaton_Interface::mouseReleaseEvent(QMouseEvent* e)
 		std::vector<Node*> nodes = graf.getNodes();
 		for (Node* n : nodes)
 		{
-			if (abs(e->pos().x() - n->getX()) < 10 && abs(e->pos().y() - n->getY()) < 10 && deleteMode==false && finalMode==false &&dragMode==false)
+			if (abs(e->pos().x() - n->getX()) < 10 && abs(e->pos().y() - n->getY()) < 10 && deleteMode == false && finalMode == false && dragMode == false)
 			{
 				if (!firstNode)
 				{
@@ -178,19 +180,47 @@ void Automaton_Interface::mouseReleaseEvent(QMouseEvent* e)
 				}
 				else
 				{
-					QString label;
-					label = openTextBox();
-					// Aici se face verificarea pentru existenta unui arc cu acela?i sens între aceleasi doua noduri
-					if (!graf.arcExists(firstNode, n))
+					//adaugare arce in functie de tipul de automat
+					if (APDMode == true)
 					{
-						graf.addArch(firstNode, n, label);
+						QString label;
+						int noLabels;
+						label = openTextBox();
+						noLabels = label.toInt();
+						std::vector<QString> labels;
+						for (int j = 0; j < noLabels; j++)
+						{
+							QString secondLabel;
+							secondLabel = openTextBox();
+							labels.push_back(secondLabel);
+						}
+						if (!graf.arcExists(firstNode, n))
+						{
+							graf.addAPDArch(firstNode, n, labels);
+						}
+						else
+						{
+							// Adaugare arc care se intoarce la acelasi nod
+							graf.addAPDArch(n, firstNode, labels);
+						}
+						firstNode = nullptr;
 					}
 					else
 					{
-						// Adaugare arc care se intoarce la acelasi nod
-						graf.addArch(n, firstNode, label);
+						QString label;
+						label = openTextBox();
+						// Aici se face verificarea pentru existenta unui arc cu acela?i sens între aceleasi doua noduri
+						if (!graf.arcExists(firstNode, n))
+						{
+							graf.addArch(firstNode, n, label);
+						}
+						else
+						{
+							// Adaugare arc care se intoarce la acelasi nod
+							graf.addArch(n, firstNode, label);
+						}
+						firstNode = nullptr;
 					}
-					firstNode = nullptr;
 				}
 				update();
 				break;
@@ -223,8 +253,8 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 			initialPen.setWidth(2);
 			p.setPen(initialPen);
 
-			QPointF aux(n->getX()-20, n->getY()-20);
-			QPointF aux2(n->getX()-7.5, n->getY()-7.5);
+			QPointF aux(n->getX() - 20, n->getY() - 20);
+			QPointF aux2(n->getX() - 7.5, n->getY() - 7.5);
 			p.drawLine(aux, aux2);
 
 			double arrowSize = 10.0;
@@ -247,219 +277,380 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 		p.drawText(r, Qt::AlignCenter, s);
 	}
 	std::vector<Arch*>& arches = graf.getArches();
-	for (Arch* a : arches)//desenam linie intre coordonatele primului si al doilea nod
-		if (a->getFirstNode()->getValue() == a->getSecondNode()->getValue())
-		{
+	std::vector<APDArch*>& apd_arches = graf.getAPDArches();
+	if (APDMode == false)
+		//Cazul in care avem automat !=APD
+	{
+		for (Arch* a : arches)//desenam linie intre coordonatele primului si al doilea nod
 			//Cazul in care avem arc de la un nod la el insusi
-			Node* n = a->getFirstNode();
-
-			//Setare dimensiuni linii
-			double firstLineLength = 30.0;
-			p.drawLine(QPointF(n->getX(), n->getY()-10),
-				QPointF(n->getX(), n->getY() - firstLineLength));
-
-			double secondLineLength = 30.0;
-			p.drawLine(QPointF(n->getX(), n->getY() - firstLineLength),
-				QPointF(n->getX() - secondLineLength, n->getY() - firstLineLength));
-			QPointF l1(n->getX(), n->getY() - firstLineLength);
-			QPointF l2(n->getX() - secondLineLength, n->getY() - firstLineLength);
-
-			p.drawLine(QPointF(n->getX() - secondLineLength, n->getY() - firstLineLength),
-				QPointF(n->getX() - secondLineLength, n->getY()));
-
-			p.drawLine(QPointF(n->getX() - secondLineLength, n->getY()),
-				QPointF(n->getX()-10, n->getY()));
-
-			QPointF lineStart = QPointF(n->getX() - secondLineLength, n->getY());
-			QPointF lineEnd = QPointF(n->getX() - 10, n->getY());
-
-			// Desenează săgeata la capătul liniei
-			double arrowSize = 10.0; // Ajustează dimensiunea săgeții
-			double arrowAngle = M_PI / 6.0; // Ajustează unghiul săgeții
-
-			QPointF arrowP1 = QPointF(lineEnd.x() - arrowSize * cos(arrowAngle),
-				lineEnd.y() - arrowSize * sin(arrowAngle));
-			QPointF arrowP2 = QPointF(lineEnd.x() - arrowSize * cos(-arrowAngle),
-				lineEnd.y() - arrowSize * sin(-arrowAngle));
-			p.drawLine(lineEnd, arrowP1);
-			p.drawLine(lineEnd, arrowP2);
-
-			//Desenare label
-			QPointF middle = (l1 + l2) / 2.0;
-			QStringList elements = a->getElements();
-			int elementY = middle.y() - 5;
-			int index = std::distance(arches.begin(), std::find(arches.begin(), arches.end(), a));
-			QRect elementRect(middle.x() - 5, elementY + 15, 10, 10);//crearea patratului coordonatele de pe stanga si dreapta,latimea si inaltimea dreptunghiului
-			p.drawText(elementRect, Qt::AlignCenter, a->getLabel());//element);
-			elementY += 15;//Spatiile intre elemente
-		}
-		else
-		{
-			//verifica daca am arc de la nod la celalalt si invers
-			bool existForward = graf.arcExists(a->getFirstNode(), a->getSecondNode());
-			bool existBackward = graf.arcExists(a->getSecondNode(), a->getFirstNode());
-			//verifica arcul daca este de la primul la al doilea sau nu
-			bool isForward = a->getFirstNode()->getX() < a->getSecondNode()->getX();
-			bool isBackward = a->getFirstNode()->getX() > a->getSecondNode()->getX();
-			//verifica daca exista arcul de la un nod la altul si invers 
-			if (existForward && existBackward)
+		//Cazul in care avem arc de la un nod tot la el
+			if (a->getFirstNode()->getValue() == a->getSecondNode()->getValue())
 			{
-				//face arcul de la primul nod la al doile
-				if (isForward)
-				{
-					// Calculeaza pozitiile de start si sfarsit pentru arcul in directia initiala
-					double separation = 7.0;
-					double angle = atan2(a->getSecondNode()->getY() - a->getFirstNode()->getY(),
-						a->getSecondNode()->getX() - a->getFirstNode()->getX());
-					double arrowSize = 10.0;
+				Node* n = a->getFirstNode();
 
-					QPointF startForward = QPointF(a->getFirstNode()->getX() + cos(angle) * (arrowSize),
-						a->getFirstNode()->getY() + sin(angle) * (arrowSize)-separation);
-					QPointF endForward = QPointF(a->getSecondNode()->getX() - cos(angle) * (arrowSize),
-						a->getSecondNode()->getY() - sin(angle) * (arrowSize)-separation);
+				//Setare dimensiuni linii
+				double firstLineLength = 30.0;
+				p.drawLine(QPointF(n->getX(), n->getY() - 10),
+					QPointF(n->getX(), n->getY() - firstLineLength));
 
-					// Deseneaza arcul în directia initiala
-					p.drawLine(startForward, endForward);
-					QPointF arrowP1Forward = QPointF(endForward.x() - arrowSize * cos(angle - M_PI / 6),
-						endForward.y() - arrowSize * sin(angle - M_PI / 6));
-					QPointF arrowP2Forward = QPointF(endForward.x() - arrowSize * cos(angle + M_PI / 6),
-						endForward.y() - arrowSize * sin(angle + M_PI / 6));
-					p.drawLine(endForward, arrowP1Forward);
-					p.drawLine(endForward, arrowP2Forward);
-					// Calcularea mijlocului arcului
-					QPointF middleForward = (a->getFirstNode()->getCoordinate() + a->getSecondNode()->getCoordinate()) / 2.0;
+				double secondLineLength = 30.0;
+				p.drawLine(QPointF(n->getX(), n->getY() - firstLineLength),
+					QPointF(n->getX() - secondLineLength, n->getY() - firstLineLength));
+				QPointF l1(n->getX(), n->getY() - firstLineLength);
+				QPointF l2(n->getX() - secondLineLength, n->getY() - firstLineLength);
 
-					// Desenarea elementelor in mijlocul arcului
-					QStringList elementsForward = a->getElements();
+				p.drawLine(QPointF(n->getX() - secondLineLength, n->getY() - firstLineLength),
+					QPointF(n->getX() - secondLineLength, n->getY()));
 
-					// Ajusteaza inaltimea pentru a fi pozitionat mai aproape de arc
-					int elementYForward = middleForward.y() - 7;
+				p.drawLine(QPointF(n->getX() - secondLineLength, n->getY()),
+					QPointF(n->getX() - 10, n->getY()));
 
-					QRect elementRectForward(middleForward.x() - 5, elementYForward, 10, 10);
-					p.drawText(elementRectForward, Qt::AlignCenter, a->getLabel());
-					elementYForward += 15;
-				}
-				else
-					//face arcul de la al doilea nod la primul
-					if(isBackward)
-				{
-					// Calculeaza pozitiile de start si sfarsit pentru arcul in directia inversa
-					double separationBackward = 6.0;
-					double angleBackward = atan2(a->getSecondNode()->getY() - a->getFirstNode()->getY(),
-						a->getSecondNode()->getX() - a->getFirstNode()->getX());
-					double arrowSize = 10.0;
-					QPointF startBackward = QPointF(a->getFirstNode()->getX() + cos(angleBackward) * (arrowSize),
-						a->getFirstNode()->getY() + sin(angleBackward) * (arrowSize)+separationBackward);
-					QPointF endBackward = QPointF(a->getSecondNode()->getX() - cos(angleBackward) * (arrowSize),
-						a->getSecondNode()->getY() - sin(angleBackward) * (arrowSize)+separationBackward);
+				QPointF lineStart = QPointF(n->getX() - secondLineLength, n->getY());
+				QPointF lineEnd = QPointF(n->getX() - 10, n->getY());
 
-					// Deseneaza arcul in directia inversa
-					p.drawLine(startBackward, endBackward);
-					QPointF arrowP1Backward = QPointF(endBackward.x() - arrowSize * cos(angleBackward - M_PI / 6),
-						endBackward.y() - arrowSize * sin(angleBackward - M_PI / 6));
-					QPointF arrowP2Backward = QPointF(endBackward.x() - arrowSize * cos(angleBackward + M_PI / 6),
-						endBackward.y() - arrowSize * sin(angleBackward + M_PI / 6));
-					p.drawLine(endBackward, arrowP1Backward);
-					p.drawLine(endBackward, arrowP2Backward);
-					// Calcularea mijlocului arcului
-					QPointF middleBackward = (a->getFirstNode()->getCoordinate() + a->getSecondNode()->getCoordinate()) / 2.0;
+				// Desenează săgeata la capătul liniei
+				double arrowSize = 10.0; // Ajustează dimensiunea săgeții
+				double arrowAngle = M_PI / 6.0; // Ajustează unghiul săgeții
 
-					// Desenarea elementelor in mijlocul arcului
-					QStringList elementsBackward = a->getElements();
-					int elementYBackward = middleBackward.y() - 5;
+				QPointF arrowP1 = QPointF(lineEnd.x() - arrowSize * cos(arrowAngle),
+					lineEnd.y() - arrowSize * sin(arrowAngle));
+				QPointF arrowP2 = QPointF(lineEnd.x() - arrowSize * cos(-arrowAngle),
+					lineEnd.y() - arrowSize * sin(-arrowAngle));
+				p.drawLine(lineEnd, arrowP1);
+				p.drawLine(lineEnd, arrowP2);
 
-					QRect elementRectBackward(middleBackward.x() - 5, elementYBackward + 15, 10, 10);
-					p.drawText(elementRectBackward, Qt::AlignCenter, a->getLabel());
-					elementYBackward += 15;
-				}
-			}
-			else
-			{
-				//Cazul in care avem arc intre 2 noduri diferite
-				double angle = atan2(a->getSecondNode()->getY() - a->getFirstNode()->getY(),
-					a->getSecondNode()->getX() - a->getFirstNode()->getX());
-				double arrowSize = 10.0; // Ajustarea dimensiunii sagetii dupa preferinta
-
-				QPointF start = QPointF(a->getFirstNode()->getX() + cos(angle) * (arrowSize),
-					a->getFirstNode()->getY() + sin(angle) * (arrowSize));
-				QPointF end = QPointF(a->getSecondNode()->getX() - cos(angle) * (arrowSize),
-					a->getSecondNode()->getY() - sin(angle) * (arrowSize));
-
-				p.drawLine(start, end);
-
-				// Calcularea punctelor pentru capul sagetii
-				QPointF arrowP1 = QPointF(end.x() - arrowSize * cos(angle - M_PI / 6),
-					end.y() - arrowSize * sin(angle - M_PI / 6));
-				QPointF arrowP2 = QPointF(end.x() - arrowSize * cos(angle + M_PI / 6),
-					end.y() - arrowSize * sin(angle + M_PI / 6));
-
-				// Desenarea capului sagetii
-				p.drawLine(end, arrowP1);
-				p.drawLine(end, arrowP2);
-
-				//Calcularea mijlocului arcului
-				QPointF middle = (a->getFirstNode()->getCoordinate() + a->getSecondNode()->getCoordinate()) / 2.0;
-				//Desenarea elementelor in mijlocul arcului
+				//Desenare label
+				QPointF middle = (l1 + l2) / 2.0;
 				QStringList elements = a->getElements();
 				int elementY = middle.y() - 5;
-
-				//Aici am pus doar indexul fiecarui arc(se vor pune mai incolon elementle din vector)
-				//QRect reprezinta un dreptunghi in coordonatele dreptunghiului de pe ecran
-				//Reprezinta pozitia unui obiect intr-o fereastra(acesta il folosesc pentru a insera elementele)
 				int index = std::distance(arches.begin(), std::find(arches.begin(), arches.end(), a));
 				QRect elementRect(middle.x() - 5, elementY + 15, 10, 10);//crearea patratului coordonatele de pe stanga si dreapta,latimea si inaltimea dreptunghiului
 				p.drawText(elementRect, Qt::AlignCenter, a->getLabel());//element);
 				elementY += 15;//Spatiile intre elemente
-
-				//for (Arch* arch : graf.getArches())
-				//{
-				//	if (arch->getFirstNode() == a->getSecondNode() && a->getFirstNode() == arch->getSecondNode())
-				//	{
-				//		QPointF mid=(a->getFirstNode()->getCoordinate() + a->getSecondNode()->getCoordinate()) / 2.0;
-				//		QPointF aux(mid.x()-5,mid.y()-5);
-				//		p.drawLine(a->getFirstNode()->getCoordinate(), aux);
-				//		p.drawLine(aux, a->getSecondNode()->getCoordinate());
-				//		QRect rectLabel(aux.x() - 10, aux.y() - 10, 10, 10);
-				//		p.drawText(rectLabel , Qt::AlignCenter, a->getLabel());
-
-				//		double angleA = atan2(a->getSecondNode()->getY() - aux.y(),
-				//			a->getSecondNode()->getX() - aux.x());
-				//		double arrowSizeA = 10.0;
-
-				//		QPointF arrowP1A = QPointF(a->getSecondNode()->getX() - arrowSizeA * cos(angleA - M_PI / 6),
-				//			end.y() - arrowSizeA * sin(angleA - M_PI / 6));
-				//		QPointF arrowP2A = QPointF(a->getSecondNode()->getX() - arrowSize * cos(angleA + M_PI / 6),
-				//			end.y() - arrowSizeA * sin(angleA + M_PI / 6));
-
-				//		// Desenarea capului săgeții
-				//		p.drawLine(a->getSecondNode()->getCoordinate(), arrowP1A);
-				//		p.drawLine(a->getSecondNode()->getCoordinate(), arrowP2A);
-				//	}
-				//}
 			}
-				//// Calcularea mijlocului arcului
-				//QPointF middle = (a->getFirstNode()->getCoordinate() + a->getSecondNode()->getCoordinate()) / 2.0;
+		//Cazul in care avem arc intre 2 noduri diferite
+			else
+			{
+				//verifica daca am arc de la nod la celalalt si invers
+				bool existForward = graf.arcExists(a->getFirstNode(), a->getSecondNode());
+				bool existBackward = graf.arcExists(a->getSecondNode(), a->getFirstNode());
+				//verifica arcul daca este de la primul la al doilea sau nu
+				bool isForward = a->getFirstNode()->getX() < a->getSecondNode()->getX();
+				bool isBackward = a->getFirstNode()->getX() > a->getSecondNode()->getX();
+				//verifica daca exista arcul de la un nod la altul si invers 
+				if (existForward && existBackward)
+				{
+					//face arcul de la primul nod la al doilea
+					if (isForward)
+					{
+						// Calculeaza pozitiile de start si sfarsit pentru arcul in directia initiala
+						double separation = 7.0;
+						double angle = atan2(a->getSecondNode()->getY() - a->getFirstNode()->getY(),
+							a->getSecondNode()->getX() - a->getFirstNode()->getX());
+						double arrowSize = 10.0;
 
-				//// Desenarea elementelor în mijlocul arcului
-				//QStringList elements = a->getElements();
-				//int elementY = middle.y() - 5;
+						QPointF startForward = QPointF(a->getFirstNode()->getX() + cos(angle) * (arrowSize),
+							a->getFirstNode()->getY() + sin(angle) * (arrowSize)-separation);
+						QPointF endForward = QPointF(a->getSecondNode()->getX() - cos(angle) * (arrowSize),
+							a->getSecondNode()->getY() - sin(angle) * (arrowSize)-separation);
 
-				//int index = std::distance(arches.begin(), std::find(arches.begin(), arches.end(), a));
-				//QRect elementRect(middle.x() - 5, elementY + 15, 10, 10);
-				//p.drawText(elementRect, Qt::AlignCenter, a->getLabel());
-				//elementY += 15;
-		}
-	if (firstNode)
+						// Deseneaza arcul în directia initiala
+						p.drawLine(startForward, endForward);
+						QPointF arrowP1Forward = QPointF(endForward.x() - arrowSize * cos(angle - M_PI / 6),
+							endForward.y() - arrowSize * sin(angle - M_PI / 6));
+						QPointF arrowP2Forward = QPointF(endForward.x() - arrowSize * cos(angle + M_PI / 6),
+							endForward.y() - arrowSize * sin(angle + M_PI / 6));
+						p.drawLine(endForward, arrowP1Forward);
+						p.drawLine(endForward, arrowP2Forward);
+						// Calcularea mijlocului arcului
+						QPointF middleForward = (a->getFirstNode()->getCoordinate() + a->getSecondNode()->getCoordinate()) / 2.0;
+
+						// Desenarea elementelor in mijlocul arcului
+						QStringList elementsForward = a->getElements();
+
+						// Ajusteaza inaltimea pentru a fi pozitionat mai aproape de arc
+						int elementYForward = middleForward.y() - 7;
+
+						QRect elementRectForward(middleForward.x() - 5, elementYForward, 10, 10);
+						p.drawText(elementRectForward, Qt::AlignCenter, a->getLabel());
+						elementYForward += 15;
+					}
+					else
+						//face arcul de la al doilea nod la primul
+						if (isBackward)
+						{
+							// Calculeaza pozitiile de start si sfarsit pentru arcul in directia inversa
+							double separationBackward = 6.0;
+							double angleBackward = atan2(a->getSecondNode()->getY() - a->getFirstNode()->getY(),
+								a->getSecondNode()->getX() - a->getFirstNode()->getX());
+							double arrowSize = 10.0;
+							QPointF startBackward = QPointF(a->getFirstNode()->getX() + cos(angleBackward) * (arrowSize),
+								a->getFirstNode()->getY() + sin(angleBackward) * (arrowSize)+separationBackward);
+							QPointF endBackward = QPointF(a->getSecondNode()->getX() - cos(angleBackward) * (arrowSize),
+								a->getSecondNode()->getY() - sin(angleBackward) * (arrowSize)+separationBackward);
+
+							// Deseneaza arcul in directia inversa
+							p.drawLine(startBackward, endBackward);
+							QPointF arrowP1Backward = QPointF(endBackward.x() - arrowSize * cos(angleBackward - M_PI / 6),
+								endBackward.y() - arrowSize * sin(angleBackward - M_PI / 6));
+							QPointF arrowP2Backward = QPointF(endBackward.x() - arrowSize * cos(angleBackward + M_PI / 6),
+								endBackward.y() - arrowSize * sin(angleBackward + M_PI / 6));
+							p.drawLine(endBackward, arrowP1Backward);
+							p.drawLine(endBackward, arrowP2Backward);
+							// Calcularea mijlocului arcului
+							QPointF middleBackward = (a->getFirstNode()->getCoordinate() + a->getSecondNode()->getCoordinate()) / 2.0;
+
+							// Desenarea elementelor in mijlocul arcului
+							QStringList elementsBackward = a->getElements();
+							int elementYBackward = middleBackward.y() - 5;
+
+							QRect elementRectBackward(middleBackward.x() - 5, elementYBackward + 15, 10, 10);
+							p.drawText(elementRectBackward, Qt::AlignCenter, a->getLabel());
+							elementYBackward += 15;
+						}
+				}
+				else
+				{
+					//Cazul in care avem arc intre 2 noduri diferite
+					double angle = atan2(a->getSecondNode()->getY() - a->getFirstNode()->getY(),
+						a->getSecondNode()->getX() - a->getFirstNode()->getX());
+					double arrowSize = 10.0; // Ajustarea dimensiunii sagetii dupa preferinta
+
+					QPointF start = QPointF(a->getFirstNode()->getX() + cos(angle) * (arrowSize),
+						a->getFirstNode()->getY() + sin(angle) * (arrowSize));
+					QPointF end = QPointF(a->getSecondNode()->getX() - cos(angle) * (arrowSize),
+						a->getSecondNode()->getY() - sin(angle) * (arrowSize));
+
+					p.drawLine(start, end);
+
+					// Calcularea punctelor pentru capul sagetii
+					QPointF arrowP1 = QPointF(end.x() - arrowSize * cos(angle - M_PI / 6),
+						end.y() - arrowSize * sin(angle - M_PI / 6));
+					QPointF arrowP2 = QPointF(end.x() - arrowSize * cos(angle + M_PI / 6),
+						end.y() - arrowSize * sin(angle + M_PI / 6));
+
+					// Desenarea capului sagetii
+					p.drawLine(end, arrowP1);
+					p.drawLine(end, arrowP2);
+
+					//Calcularea mijlocului arcului
+					QPointF middle = (a->getFirstNode()->getCoordinate() + a->getSecondNode()->getCoordinate()) / 2.0;
+					//Desenarea elementelor in mijlocul arcului
+					QStringList elements = a->getElements();
+					int elementY = middle.y() - 5;
+
+					//Aici am pus doar indexul fiecarui arc(se vor pune mai incolon elementle din vector)
+					//QRect reprezinta un dreptunghi in coordonatele dreptunghiului de pe ecran
+					//Reprezinta pozitia unui obiect intr-o fereastra(acesta il folosesc pentru a insera elementele)
+					//int index = std::distance(arches.begin(), std::find(arches.begin(), arches.end(), a));
+					QRect elementRect(middle.x() - 5, elementY + 15, 10, 10);//crearea patratului coordonatele de pe stanga si dreapta,latimea si inaltimea dreptunghiului
+					p.drawText(elementRect, Qt::AlignCenter, a->getLabel());//element);
+					elementY += 15;//Spatiile intre elemente
+				}
+				if (firstNode)
+				{
+					QRect r(firstNode->getX() - 10, firstNode->getY() - 10, 20, 20);
+					QPen pen;
+					pen.setColor(Qt::red);
+					pen.setWidth(2);
+					p.setPen(pen);
+					p.drawEllipse(r);
+					QString s;
+					s = "q" + QString::number(firstNode->getValue());
+					p.drawText(r, Qt::AlignCenter, s);
+				}
+			}
+	}
+	else
 	{
-		QRect r(firstNode->getX() - 10, firstNode->getY() - 10, 20, 20);
-		QPen pen;
-		pen.setColor(Qt::red);
-		pen.setWidth(2);
-		p.setPen(pen);
-		p.drawEllipse(r);
-		QString s;
-		s = "q" + QString::number(firstNode->getValue());
-		p.drawText(r, Qt::AlignCenter, s);
+		for (APDArch* a : apd_arches)
+			if (a->getFirstNode()->getValue() == a->getSecondNode()->getValue())
+			{
+				Node* n = a->getFirstNode();
+
+				//Setare dimensiuni linii
+				double firstLineLength = 30.0;
+				p.drawLine(QPointF(n->getX(), n->getY() - 10),
+					QPointF(n->getX(), n->getY() - firstLineLength));
+
+				double secondLineLength = 30.0;
+				p.drawLine(QPointF(n->getX(), n->getY() - firstLineLength),
+					QPointF(n->getX() - secondLineLength, n->getY() - firstLineLength));
+				QPointF l1(n->getX(), n->getY() - firstLineLength);
+				QPointF l2(n->getX() - secondLineLength, n->getY() - firstLineLength);
+
+				p.drawLine(QPointF(n->getX() - secondLineLength, n->getY() - firstLineLength),
+					QPointF(n->getX() - secondLineLength, n->getY()));
+
+				p.drawLine(QPointF(n->getX() - secondLineLength, n->getY()),
+					QPointF(n->getX() - 10, n->getY()));
+
+				QPointF lineStart = QPointF(n->getX() - secondLineLength, n->getY());
+				QPointF lineEnd = QPointF(n->getX() - 10, n->getY());
+
+				// Desenează săgeata la capătul liniei
+				double arrowSize = 10.0; // Ajustează dimensiunea săgeții
+				double arrowAngle = M_PI / 6.0; // Ajustează unghiul săgeții
+
+				QPointF arrowP1 = QPointF(lineEnd.x() - arrowSize * cos(arrowAngle),
+					lineEnd.y() - arrowSize * sin(arrowAngle));
+				QPointF arrowP2 = QPointF(lineEnd.x() - arrowSize * cos(-arrowAngle),
+					lineEnd.y() - arrowSize * sin(-arrowAngle));
+				p.drawLine(lineEnd, arrowP1);
+				p.drawLine(lineEnd, arrowP2);
+
+				//Desenare label
+				QPointF middle = (l1 + l2) / 2.0;
+				int elementY = middle.y() - 5;
+				a->setNoLabels(a->getLabels().size());
+				for (int i=0;i<a->getNoLabels();i++)
+				{
+					QRect elementRect(middle.x() - 5, elementY + 15, 10, 10);
+					p.drawText(elementRect, Qt::AlignCenter, a->getLabels()[i]);//element);
+					elementY -= 15;//Spatiile intre elemente
+				}
+			}
+		//Cazul in care avem arc intre 2 noduri diferite
+			else
+			{
+				////verifica daca am arc de la nod la celalalt si invers
+				//bool existForward = graf.arcExists(a->getFirstNode(), a->getSecondNode());
+				//bool existBackward = graf.arcExists(a->getSecondNode(), a->getFirstNode());
+				////verifica arcul daca este de la primul la al doilea sau nu
+				//bool isForward = a->getFirstNode()->getX() < a->getSecondNode()->getX();
+				//bool isBackward = a->getFirstNode()->getX() > a->getSecondNode()->getX();
+				////verifica daca exista arcul de la un nod la altul si invers 
+				//if (existForward && existBackward)
+				//{
+				//	//face arcul de la primul nod la al doilea
+				//	if (isForward)
+				//	{
+				//		// Calculeaza pozitiile de start si sfarsit pentru arcul in directia initiala
+				//		double separation = 7.0;
+				//		double angle = atan2(a->getSecondNode()->getY() - a->getFirstNode()->getY(),
+				//			a->getSecondNode()->getX() - a->getFirstNode()->getX());
+				//		double arrowSize = 10.0;
+
+				//		QPointF startForward = QPointF(a->getFirstNode()->getX() + cos(angle) * (arrowSize),
+				//			a->getFirstNode()->getY() + sin(angle) * (arrowSize)-separation);
+				//		QPointF endForward = QPointF(a->getSecondNode()->getX() - cos(angle) * (arrowSize),
+				//			a->getSecondNode()->getY() - sin(angle) * (arrowSize)-separation);
+
+				//		// Deseneaza arcul în directia initiala
+				//		p.drawLine(startForward, endForward);
+				//		QPointF arrowP1Forward = QPointF(endForward.x() - arrowSize * cos(angle - M_PI / 6),
+				//			endForward.y() - arrowSize * sin(angle - M_PI / 6));
+				//		QPointF arrowP2Forward = QPointF(endForward.x() - arrowSize * cos(angle + M_PI / 6),
+				//			endForward.y() - arrowSize * sin(angle + M_PI / 6));
+				//		p.drawLine(endForward, arrowP1Forward);
+				//		p.drawLine(endForward, arrowP2Forward);
+				//		// Calcularea mijlocului arcului
+				//		QPointF middleForward = (a->getFirstNode()->getCoordinate() + a->getSecondNode()->getCoordinate()) / 2.0;
+
+				//		// Desenarea elementelor in mijlocul arcului
+				//		QStringList elementsForward = a->getElements();
+
+				//		// Ajusteaza inaltimea pentru a fi pozitionat mai aproape de arc
+				//		int elementYForward = middleForward.y() - 7;
+
+				//		a->setNoLabels(a->getLabels().size());
+				//		for (int i = 0; i < a->getNoLabels(); i++)
+				//		{
+				//			QRect elementRectForward(middleForward.x() - 5, elementYForward, 10, 10);
+				//			p.drawText(elementRectForward, Qt::AlignCenter, a->getLabels()[i]);
+				//			elementYForward += 15;
+				//		}
+				//	}
+				//	else
+				//		//face arcul de la al doilea nod la primul
+				//		if (isBackward)
+				//		{
+				//			// Calculeaza pozitiile de start si sfarsit pentru arcul in directia inversa
+				//			double separationBackward = 6.0;
+				//			double angleBackward = atan2(a->getSecondNode()->getY() - a->getFirstNode()->getY(),
+				//				a->getSecondNode()->getX() - a->getFirstNode()->getX());
+				//			double arrowSize = 10.0;
+				//			QPointF startBackward = QPointF(a->getFirstNode()->getX() + cos(angleBackward) * (arrowSize),
+				//				a->getFirstNode()->getY() + sin(angleBackward) * (arrowSize)+separationBackward);
+				//			QPointF endBackward = QPointF(a->getSecondNode()->getX() - cos(angleBackward) * (arrowSize),
+				//				a->getSecondNode()->getY() - sin(angleBackward) * (arrowSize)+separationBackward);
+
+				//			// Deseneaza arcul in directia inversa
+				//			p.drawLine(startBackward, endBackward);
+				//			QPointF arrowP1Backward = QPointF(endBackward.x() - arrowSize * cos(angleBackward - M_PI / 6),
+				//				endBackward.y() - arrowSize * sin(angleBackward - M_PI / 6));
+				//			QPointF arrowP2Backward = QPointF(endBackward.x() - arrowSize * cos(angleBackward + M_PI / 6),
+				//				endBackward.y() - arrowSize * sin(angleBackward + M_PI / 6));
+				//			p.drawLine(endBackward, arrowP1Backward);
+				//			p.drawLine(endBackward, arrowP2Backward);
+				//			// Calcularea mijlocului arcului
+				//			QPointF middleBackward = (a->getFirstNode()->getCoordinate() + a->getSecondNode()->getCoordinate()) / 2.0;
+
+				//			// Desenarea elementelor in mijlocul arcului
+				//			QStringList elementsBackward = a->getElements();
+				//			int elementYBackward = middleBackward.y() - 5;
+
+				//			a->setNoLabels(a->getLabels().size());
+				//			for (int i = 0; i < a->getNoLabels(); i++)
+				//			{
+				//				QRect elementRectBackward(middleBackward.x() - 5, elementYBackward + 15, 10, 10);
+				//				p.drawText(elementRectBackward, Qt::AlignCenter, a->getLabels()[i]);
+				//				elementYBackward += 15;
+				//			}
+				//		}
+				//}
+				/*else
+				{*/
+					//Cazul in care avem arc intre 2 noduri diferite
+					double angle = atan2(a->getSecondNode()->getY() - a->getFirstNode()->getY(),
+						a->getSecondNode()->getX() - a->getFirstNode()->getX());
+					double arrowSize = 10.0; // Ajustarea dimensiunii sagetii dupa preferinta
+
+					QPointF start = QPointF(a->getFirstNode()->getX() + cos(angle) * (arrowSize),
+						a->getFirstNode()->getY() + sin(angle) * (arrowSize));
+					QPointF end = QPointF(a->getSecondNode()->getX() - cos(angle) * (arrowSize),
+						a->getSecondNode()->getY() - sin(angle) * (arrowSize));
+
+					p.drawLine(start, end);
+
+					// Calcularea punctelor pentru capul sagetii
+					QPointF arrowP1 = QPointF(end.x() - arrowSize * cos(angle - M_PI / 6),
+						end.y() - arrowSize * sin(angle - M_PI / 6));
+					QPointF arrowP2 = QPointF(end.x() - arrowSize * cos(angle + M_PI / 6),
+						end.y() - arrowSize * sin(angle + M_PI / 6));
+
+					// Desenarea capului sagetii
+					p.drawLine(end, arrowP1);
+					p.drawLine(end, arrowP2);
+
+					//Calcularea mijlocului arcului
+					QPointF middle = (a->getFirstNode()->getCoordinate() + a->getSecondNode()->getCoordinate()) / 2.0;
+					//Desenarea elementelor in mijlocul arcului
+					QStringList elements = a->getElements();
+					int elementY = middle.y() - 5;
+
+					a->setNoLabels(a->getLabels().size());
+					for (int i = 0; i < a->getNoLabels(); i++)
+					{
+						QRect elementRect(middle.x() - 5, elementY + 15, 10, 10);
+						p.drawText(elementRect, Qt::AlignCenter, a->getLabels()[i]);
+						elementY += 15;
+					}
+
+				//}
+				if (firstNode)
+				{
+					QRect r(firstNode->getX() - 10, firstNode->getY() - 10, 20, 20);
+					QPen pen;
+					pen.setColor(Qt::red);
+					pen.setWidth(2);
+					p.setPen(pen);
+					p.drawEllipse(r);
+					QString s;
+					s = "q" + QString::number(firstNode->getValue());
+					p.drawText(r, Qt::AlignCenter, s);
+				}
+			}
 	}
 }
 
