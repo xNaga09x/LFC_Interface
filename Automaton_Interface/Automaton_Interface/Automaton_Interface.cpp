@@ -11,16 +11,16 @@ Automaton_Interface::Automaton_Interface(QWidget* parent)
 	nodeIsBeingDragged = false;
 	draggedNode = nullptr;
 	lastMousePos;
-	automatonType = -1;
 	finalMode = false;
 	deleteMode = false;
 	dragMode = false;
-	APDMode = false;
 	//connect(ui.deleteButton, &QPushButton::clicked, this, &AutomatonInterface::onButtonClicked);
 }
 
 Automaton_Interface::~Automaton_Interface()
-{}
+{
+	delete automaton;
+}
 
 void Automaton_Interface::on_deleteButton_clicked()
 {
@@ -45,16 +45,30 @@ void Automaton_Interface::on_addFromFileButton_clicked()
 	std::string stringFileName = fileName.toStdString();
 	//Deschide fisierul ales si citeste din el
 	std::ifstream file(stringFileName);
-	uint32_t type;
+	std::string type;
 	file >> type;
-	switch (type)
+	if (type == "AFD")
 	{
-	case 0: //AFD
-		automatonType = 0;
-		automaton.Read(file);
+		toDrawAutomaton = new AFD;
+		toDrawAutomaton->readAutomaton(file);
 	}
-	//In functie de type se apeleaza crearea obiectului automat
-	//Deseneaza automatul citit pe ecran
+	else if (type == "AFN")
+	{
+		toDrawAutomaton = new AFN;
+		toDrawAutomaton->readAutomaton(file);
+	}
+	else if (type == "AFNL")
+	{
+		toDrawAutomaton = new AFN_lambda;
+		toDrawAutomaton->readAutomaton(file);
+	}
+	else if (type == "APD")
+	{
+		//custom read from file APD
+	}
+	else exit(1); //nu s a citit un type valid	
+
+	//apelare functie in maindow de desenare a automatului respectiv
 	file.close();
 }
 
@@ -66,70 +80,33 @@ void Automaton_Interface::on_saveToFileButton_clicked()
 	std::string stringFileName = fileName.toStdString();
 	//Deschide fisierul ales si salveaza automatul in el
 	std::ofstream file(stringFileName);
-	automaton.printToFile(file);
+	automaton->printAutomaton(file);
 	file.close();
 }
 
-void Automaton_Interface::on_afdRadioButton_clicked()
+void Automaton_Interface::showAutomatonTypeDialog()
 {
-	automatonType = 1;
-	//momentan o sa cred utilizatorul pe cuvant cand zice ca a desenat un afd
-	//dar putem implementa si verificari inainte sa se creeze obiectul
-	std::vector<int> Q;
-	std::vector<char> Sum;
-	std::vector<std::tuple<int, char, int>> Delta;
-	uint16_t q0;
-	std::vector<int> F;
+	AutomatonTypeDialog dialog(this);
 
-	std::vector<Node*> nodes = graf.getNodes();
-	q0 = nodes[0]->getValue(); //se schimba cand implementam modificarea starii initiale/finale
-	//menu pop up right click on node in care setezi campurile de isInitialState/ isFinalState
-	F.emplace_back(q0); //dummy for testing, remake after menu
-	for (auto& node : nodes)
-	{
-		Q.emplace_back(node->getValue());
-	}
-	std::vector<Arch*> arches = graf.getArches();
-	uint32_t startState;
-	char transitionSymbol;
-	uint32_t finalState;
-	for (auto& arch : arches)
-	{
-		//firstNode -> starea curenta a automatului
-		//label -> simbolul citit de pe banda de intrare
-		//secondNode -> starea in care ajunge automatul dupa citire
-		startState = arch->getFirstNode()->getValue();
-		transitionSymbol = arch->getLabel().toStdString()[0];
-		finalState = arch->getSecondNode()->getValue();
-		if (std::find(Sum.begin(), Sum.end(), transitionSymbol) == Sum.end())
-			Sum.emplace_back(transitionSymbol);
-		Delta.emplace_back(std::make_tuple(startState, transitionSymbol, finalState));
-	}
-	automaton.setDelta(Delta);
-	automaton.setSum(Sum);
-	automaton.setQ(Q);
-	automaton.setF(F);
-	automaton.setq0(q0);
-	automaton.setSizeDelta(Delta.size());
-	automaton.setSizeF(F.size());
-	automaton.setSizeQ(Q.size());
-	automaton.setSizeSum(Sum.size());
-}
-
-void Automaton_Interface::on_afnRadioButton_clicked()
-{
-	automatonType = 2;
-}
-
-void Automaton_Interface::on_afnlRadioButton_clicked()
-{
-	automatonType = 3;
-}
-
-void Automaton_Interface::on_apdRadioButton_clicked()
-{
-	automatonType = 4;
-	APDMode = !APDMode;
+    if (dialog.exec() == QDialog::Accepted) {
+        automatonType = dialog.getSelectedAutomatonType();
+		//delete automaton;
+		switch (automatonType)
+		{
+		case AutomatonType::AFDType:
+			automaton = new AFD;
+			break;
+		case AutomatonType::AFNType:
+			automaton = new AFN;
+			break;
+		case AutomatonType::AFNLType:
+			automaton = new AFN_lambda;
+			break;
+		case AutomatonType::APDType:
+			//se va folosi variabila automatonPD pentru bg obj
+			break;
+		}
+    }
 }
 
 void Automaton_Interface::mouseReleaseEvent(QMouseEvent* e)
@@ -157,6 +134,19 @@ void Automaton_Interface::mouseReleaseEvent(QMouseEvent* e)
 
 		if (!overlapping)
 		{
+			//adauga starile in obiect
+			int stateValue = graf.getNodes().size();
+			if (automatonType == AutomatonType::APDType)
+			{
+				automatonPD.addState(stateValue);
+				automatonPD.setSizeQ(automatonPD.getQ().size());
+			}
+			else
+			{
+				automaton->addState(stateValue);
+				automaton->setSizeQ(automaton->getQ().size());
+			}
+				
 			graf.addNode(e->pos());
 			if (graf.getNodes().size() == 1)
 			{
@@ -181,7 +171,7 @@ void Automaton_Interface::mouseReleaseEvent(QMouseEvent* e)
 				else
 				{
 					//adaugare arce in functie de tipul de automat
-					if (APDMode == true)
+					if (automatonType == AutomatonType::APDType)
 					{
 						QString label;
 						int noLabels;
@@ -197,11 +187,15 @@ void Automaton_Interface::mouseReleaseEvent(QMouseEvent* e)
 						if (!graf.arcExists(firstNode, n))
 						{
 							graf.addAPDArch(firstNode, n, labels);
+							//adaug tranzitia corespunzatoare in obiectul APD
+							//...
 						}
 						else
 						{
 							// Adaugare arc care se intoarce la acelasi nod
 							graf.addAPDArch(n, firstNode, labels);
+							//adaug tranzitia corespunzatoare in obiectul APD
+							//...
 						}
 						firstNode = nullptr;
 					}
@@ -209,15 +203,19 @@ void Automaton_Interface::mouseReleaseEvent(QMouseEvent* e)
 					{
 						QString label;
 						label = openTextBox();
-						// Aici se face verificarea pentru existenta unui arc cu acela?i sens între aceleasi doua noduri
+						// Aici se face verificarea pentru existenta unui arc cu acelasi sens intre aceleasi doua noduri
 						if (!graf.arcExists(firstNode, n))
 						{
 							graf.addArch(firstNode, n, label);
+							//adaug tranzitia corespunzatoare in obiect
+							automaton->addSymbolToAlphabet(label.toStdString()[0]);
+							automaton->addTransition(firstNode->getValue(), label.toStdString()[0], n->getValue());
 						}
 						else
 						{
 							// Adaugare arc care se intoarce la acelasi nod
 							graf.addArch(n, firstNode, label);
+							automaton->addTransition(n->getValue(), label.toStdString()[0], firstNode->getValue());
 						}
 						firstNode = nullptr;
 					}
@@ -278,7 +276,7 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 	}
 	std::vector<Arch*>& arches = graf.getArches();
 	std::vector<APDArch*>& apd_arches = graf.getAPDArches();
-	if (APDMode == false)
+	if (automatonType != AutomatonType::APDType)
 		//Cazul in care avem automat !=APD
 	{
 		for (Arch* a : arches)//desenam linie intre coordonatele primului si al doilea nod
@@ -689,6 +687,9 @@ void Automaton_Interface::mousePressEvent(QMouseEvent* e) {
 					if (abs(e->pos().x() - n->getX()) < 10 && abs(e->pos().y() - n->getY()) < 10) {
 						// Setarea nodului ca nod final
 						n->setFinalState(true);
+						if (automatonType != AutomatonType::APDType)
+							automaton->addFinalState(n->getValue());
+						else automatonPD.addFinalState(n->getValue());
 						update();
 						break;
 					}

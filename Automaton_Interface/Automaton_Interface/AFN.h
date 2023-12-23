@@ -1,4 +1,5 @@
 #pragma once
+#include "Automaton.h"
 #include<iostream>
 #include<string>
 #include<vector>
@@ -6,7 +7,7 @@
 #include<algorithm>
 #include<unordered_set>
 #include<fstream>
-class AFN
+class AFN : public Automaton
 {
 public:
 	AFN();
@@ -41,13 +42,18 @@ public:
 	void printF() const;
 	void printAutomaton() const;
 
+	void addState(int state);
+	void addTransition(int firstState, char symbol, int secondState);
+	void addSymbolToAlphabet(char symbol);
+	void addFinalState(int state);
+
 	//verificare utilizand BackTracking (currentStates reprezinta starile de cuvinte,deoarece pot exista mai multe
 	//stari intr-un moment,word e cuv dat,iar currentIndex e litera curenta din cuvant)
 	bool checkWord(const std::unordered_set<int>& currentStates, const std::string& word, int currentIndex);
 
-	AFN Read();
+	void readAutomaton(std::ifstream& file);
 
-	void printToFile(std::ofstream& file);
+	void printAutomaton(std::ofstream& file);
 
 private:
 	uint16_t m_sizeQ;

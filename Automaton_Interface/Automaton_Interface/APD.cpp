@@ -204,6 +204,22 @@ void APD::printAutomaton() const
 	this->printF();
 }
 
+void APD::addState(int state)
+{
+	m_Q.emplace_back(state);
+}
+
+void APD::addFinalState(int state)
+{
+	m_F.emplace_back(state);
+	m_sizeF = m_F.size();
+}
+
+bool APD::checkWord(const std::string& word) const
+{
+	return false;
+}
+
 void APD::printGamma() const
 {
 	for (int i = 0; i < m_sizeGamma; i++)

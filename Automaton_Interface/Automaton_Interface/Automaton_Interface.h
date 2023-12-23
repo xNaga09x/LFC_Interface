@@ -2,6 +2,9 @@
 
 #include <QtWidgets/QMainWindow>
 #include "ui_Automaton_Interface.h"
+#include "Automaton.h"
+#include "AutomatonType.h"
+#include "AutomatonTypeDialog.h"
 #include "Graph.h"
 #include <QKeyEvent>
 #include <QMainWindow>
@@ -25,8 +28,10 @@
 #include <vector>
 #include <algorithm>
 #include<set>
-
 #include "AFD.h"
+#include "AFN.h"
+#include "AFN_lambda.h"
+#include "APD.h"
 
 class Automaton_Interface : public QMainWindow
 {
@@ -46,11 +51,8 @@ public slots:
     void on_dragButton_clicked();  // Slot pentru gestionarea evenimentului de clic pe buton
     void on_addFromFileButton_clicked(); // Slot pentru adaugarea unui automat dintr-un fisier
     void on_saveToFileButton_clicked(); // Slot pentru salvarea unui automat intr-un fisier
-    //Slot-uri pentru tipul obiectului (!poate puse intr-un pop up inainte de a incepe desenarea & facut enum pt type)
-    void on_afdRadioButton_clicked();
-    void on_afnRadioButton_clicked();
-    void on_afnlRadioButton_clicked();
-    void on_apdRadioButton_clicked();
+    //Slot-uri pentru tipul obiectului
+    void showAutomatonTypeDialog();
 
 private:
     Ui::Automaton_InterfaceClass ui;
@@ -60,11 +62,13 @@ private:
     bool nodeIsBeingDragged;  // Folosit pentru a verifica daca un nod este în miscare
     Node* draggedNode;        // Nodul care este tras
     QPoint lastMousePos;      // Pozitia ultimei pozitii a mouse-ului in timpul tragerii
-    uint32_t automatonType; // Variabila pentru determinarea tipului de obiect generat (doar pt scriere in fisier)
-    AFD automaton;
+    AutomatonType automatonType; //enum pt tipul automatului (am inlocuit APDMode cu asta!)
+    Automaton* automaton;
+    Automaton* toDrawAutomaton; //pt read from file
+    APD automatonPD;
+    APD toDrawAPD; //pt read from file
 
     bool dragMode;
     bool finalMode;
     bool deleteMode;  // Variabila pentru a tine evidenta starii de stergere
-    bool APDMode;
 };

@@ -195,6 +195,30 @@ void AFN_lambda::printAutomaton() const
 	this->printF();
 }
 
+void AFN_lambda::addState(int state)
+{
+	m_Q.emplace_back(state);
+	m_sizeQ=m_Q.size();
+}
+
+void AFN_lambda::addTransition(int firstState, char symbol, int secondState)
+{
+	m_Delta.emplace_back(std::make_tuple(firstState, symbol, secondState));
+	m_sizeDelta = m_Delta.size();
+}
+
+void AFN_lambda::addSymbolToAlphabet(char symbol)
+{
+	m_Sum.emplace_back(symbol);
+	m_sizeSum = m_Sum.size();
+}
+
+void AFN_lambda::addFinalState(int state)
+{
+	m_F.emplace_back(state);
+	m_sizeF = m_F.size();
+}
+
 bool AFN_lambda::checkWord(const std::unordered_set<int>& currentStates, const std::string& word, int currentIndex)
 {
 	//verific daca am parcurs cuvantul
@@ -224,9 +248,8 @@ bool AFN_lambda::checkWord(const std::unordered_set<int>& currentStates, const s
 	return checkWord(nextState, word, currentIndex + 1);
 }
 
-AFN_lambda AFN_lambda::Read()
+void AFN_lambda::readAutomaton(std::ifstream& file)
 {
-	std::ifstream file("automat.txt");
 	uint16_t value;
 	int v;
 	int v1;
@@ -277,33 +300,27 @@ AFN_lambda AFN_lambda::Read()
 	}
 	m_F = int_vector;
 	int_vector.clear();
-	return AFN_lambda();
 }
 
-void AFN_lambda::printToFile(std::ofstream& file)
+void AFN_lambda::printAutomaton(std::ofstream& file)
 {
-	file << "M=({";
+	file << "Stari:\n";
 	for (uint32_t index = 0; index < m_sizeQ; index++)
 	{
-		if (index < m_sizeQ - 1)
-			file << "q" << index << ", ";
-		else
-			file << "q" << index << "}, {";
+		file << "q" << index << " ";
 	}
+	file << "\nAlfabet:\n";
 	for (uint32_t index = 0; index < m_sizeSum; index++)
 	{
-		if (index < m_sizeSum - 1)
-			file << m_Sum[index] << ", ";
-		else file << m_Sum[index] << "}, ";
+		file << m_Sum[index] << " ";
 	}
-	file << "delta, q" << m_q0 << ", {";
+	file << "\nStare initiala: " << m_q0 << "\n";
+	file << "Stari finale:\n";
 	for (uint32_t index = 0; index < m_sizeF; index++)
 	{
-		if (index < m_sizeF - 1)
-			file << "q" << m_F[index] << ", ";
-		else file << "q" << m_F[index] << "})";
+		file << "q" << m_F[index] << " ";
 	}
-	file << "\nDelta:\n";
+	file << "\nTranzitii:\n";
 	for (auto& transition : m_Delta)
 	{
 		file << "delta(q" << std::get<0>(transition) << ","

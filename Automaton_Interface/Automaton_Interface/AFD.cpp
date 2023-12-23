@@ -204,6 +204,29 @@ bool AFD::isDeterministic()
 	return true;
 }
 
+void AFD::addState(int state)
+{
+	m_Q.emplace_back(state);
+}
+
+void AFD::addTransition(int firstState, char symbol, int secondState)
+{
+	m_Delta.emplace_back(std::make_tuple(firstState, symbol, secondState));
+	m_sizeDelta = m_Delta.size();
+}
+
+void AFD::addSymbolToAlphabet(char symbol)
+{
+	m_Sum.emplace_back(symbol);
+	m_sizeSum = m_Delta.size();
+}
+
+void AFD::addFinalState(int state)
+{
+	m_F.emplace_back(state);
+	m_sizeF = m_F.size();
+}
+
 bool AFD::checkWord(const std::unordered_set<int>& currentStates, const std::string& word, int currentIndex)
 {
 	//verific daca am parcurs cuvantul
@@ -230,7 +253,7 @@ bool AFD::checkWord(const std::unordered_set<int>& currentStates, const std::str
 	return checkWord(nextState, word, currentIndex + 1);
 }
 
-void AFD::Read(std::ifstream& file)
+void AFD::readAutomaton(std::ifstream& file) 
 {
 	uint16_t value;
 	int v;
@@ -282,41 +305,31 @@ void AFD::Read(std::ifstream& file)
 	}
 	m_F = int_vector;
 	int_vector.clear();
-	//return AFD();
 }
 
-void AFD::printToFile(std::ofstream& file)
+void AFD::printAutomaton(std::ofstream& file)
 {
-	if (isDeterministic())
+	file << "Stari:\n";
+	for (uint32_t index = 0; index < m_sizeQ; index++)
 	{
-		file << "M=({";
-		for (uint32_t index = 0; index < m_sizeQ; index++)
-		{
-			if (index < m_sizeQ - 1)
-				file << "q" << index << ", ";
-			else file << "q" << index << "}, {";
-
-		}
-		for (uint32_t index = 0; index < m_sizeSum; index++)
-		{
-			if (index < m_sizeSum - 1)
-				file << m_Sum[index] << ", ";
-			else file << m_Sum[index] << "}, ";
-		}
-		file << "delta, q" << m_q0 << ", {";
-		for (uint32_t index = 0; index < m_sizeF; index++)
-		{
-			if (index < m_sizeF - 1)
-				file << "q" << m_F[index] << ", ";
-			else file << "q" << m_F[index] << "})";
-		}
-		file << "\nDelta:\n";
-		for (auto& transition : m_Delta)
-		{
-			file << "delta(q" << std::get<0>(transition) << ","
-				<< std::get<1>(transition) << ")=q" << std::get<2>(transition) << "\n";
-		}
+		file << "q" << index << " ";
 	}
-	else file << "Automatul este salvat cu tipul gresit.";
+	file << "\nAlfabet:\n";
+	for (uint32_t index = 0; index < m_sizeSum; index++)
+	{
+		file << m_Sum[index] << " ";
+	}
+	file << "\nStare initiala: " << m_q0 << "\n";
+	file << "Stari finale:\n";
+	for (uint32_t index = 0; index < m_sizeF; index++)
+	{
+		file << "q" << m_F[index] << " ";
+	}
+	file << "\nTranzitii:\n";
+	for (auto& transition : m_Delta)
+	{
+		file << "delta(q" << std::get<0>(transition) << ","
+			<< std::get<1>(transition) << ")=q" << std::get<2>(transition) << "\n";
+	}
 }
 

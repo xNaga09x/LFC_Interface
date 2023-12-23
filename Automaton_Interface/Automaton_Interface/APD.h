@@ -41,18 +41,27 @@ public:
 	void printF() const;
 	void printGamma() const;
 	void printAutomaton() const;
+
+	void addState(int state);
+	//add Transition
+	//add Symbol
+	void addFinalState(int state);
+	//add InitialState
+
+	//to do:
+	bool checkWord(const std::string& word) const;
 private:
 	uint16_t m_sizeQ;
 	uint16_t m_sizeSum;
 	uint16_t m_sizeDelta;
 	uint16_t m_sizeF;
 	uint16_t m_sizeGamma;
-	std::vector<int> m_Q;//se poate face si int sau string sau char(nu are treaba) - q0,q1,q2...
-	std::vector<char> m_Sum;//alfabetul - a,b
-	std::vector<Prod> m_Delta;//functiile de tranzitie
+	std::vector<int> m_Q;
+	std::vector<char> m_Sum;
+	std::vector<Prod> m_Delta;
 	std::vector<char> m_Gamma;
 	char m_Z0;
-	uint16_t m_q0;//starea initiala
-	std::vector<int> m_F;//stari finale
+	uint16_t m_q0;
+	std::vector<int> m_F;
 };
 

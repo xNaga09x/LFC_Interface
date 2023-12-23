@@ -73,6 +73,15 @@
     <ClCompile Include="APDArch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Automaton.cpp">
+      <Filter>Automatons</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomatonTypeDialog.cpp">
+      <Filter>Automatons</Filter>
+    </ClCompile>
+    <ClCompile Include="AutomatonType.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Node.h">
@@ -102,10 +111,24 @@
     <ClInclude Include="APDArch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Automaton.h">
+      <Filter>Automatons</Filter>
+    </ClInclude>
+    <ClInclude Include="AutomatonType.h">
+      <Filter>Automatons</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="TextBox.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="AutomatonTypeDialog.h">
+      <Filter>Automatons</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="AutomatonTypeDialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
   </ItemGroup>
 </Project>

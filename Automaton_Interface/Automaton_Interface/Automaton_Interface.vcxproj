@@ -95,11 +95,15 @@
     <ClCompile Include="APD.cpp" />
     <ClCompile Include="APDArch.cpp" />
     <ClCompile Include="Arch.cpp" />
+    <ClCompile Include="Automaton.cpp" />
+    <ClCompile Include="AutomatonType.cpp" />
+    <ClCompile Include="AutomatonTypeDialog.cpp" />
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="Prod.cpp" />
     <ClCompile Include="TextBox.cpp" />
     <QtRcc Include="Automaton_Interface.qrc" />
+    <QtUic Include="AutomatonTypeDialog.ui" />
     <QtUic Include="Automaton_Interface.ui" />
     <QtMoc Include="Automaton_Interface.h" />
     <ClCompile Include="Automaton_Interface.cpp" />
@@ -112,6 +116,9 @@
     <ClInclude Include="APD.h" />
     <ClInclude Include="APDArch.h" />
     <ClInclude Include="Arch.h" />
+    <ClInclude Include="Automaton.h" />
+    <ClInclude Include="AutomatonType.h" />
+    <QtMoc Include="AutomatonTypeDialog.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="Prod.h" />

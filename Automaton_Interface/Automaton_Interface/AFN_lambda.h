@@ -1,4 +1,5 @@
 #pragma once
+#include "Automaton.h"
 #include<iostream>
 #include<string>
 #include<vector>
@@ -6,8 +7,10 @@
 #include<algorithm>
 #include<unordered_set>
 #include<fstream>
-class AFN_lambda
+//to modify
+class AFN_lambda : public Automaton
 {
+public:
 	AFN_lambda();
 	AFN_lambda(const uint16_t& sizeQ, const uint16_t& sizeSum, const uint16_t& sizeDelta, const uint16_t& sizeF, const std::vector<int>& Q,
 		const std::vector<char>& Sum, const std::vector<std::tuple<int, char, int>>& Delta, uint16_t q0, const std::vector<int>& F);
@@ -40,13 +43,18 @@ class AFN_lambda
 	void printF() const;
 	void printAutomaton() const;
 
+	void addState(int state);
+	void addTransition(int firstState, char symbol, int secondState);
+	void addSymbolToAlphabet(char symbol);
+	void addFinalState(int state);
+
 	//verificare utilizand BackTracking (currentStates reprezinta starile de cuvinte,deoarece pot exista mai multe
 	//stari intr-un moment,word e cuv dat,iar currentIndex e litera curenta din cuvant)
 	bool checkWord(const std::unordered_set<int>& currentStates, const std::string& word, int currentIndex);
 
-	AFN_lambda Read();
+	void readAutomaton(std::ifstream& file);
 
-	void printToFile(std::ofstream& file);
+	void printAutomaton(std::ofstream& file);
 
 private:
 	uint16_t m_sizeQ;

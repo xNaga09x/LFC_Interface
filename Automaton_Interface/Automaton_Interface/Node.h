@@ -22,7 +22,7 @@ public:
     int getValue();
     QPoint getCoordinate()
     {
-        return coordinate;
+        return coordinate; //if drag returns access violation
     }
     int getX();
     int getY();

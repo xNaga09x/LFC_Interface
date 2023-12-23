@@ -53,58 +53,6 @@
      <string>Save to file</string>
     </property>
    </widget>
-   <widget class="QRadioButton" name="afdRadioButton">
-    <property name="geometry">
-     <rect>
-      <x>680</x>
-      <y>0</y>
-      <width>89</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>AFD</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="afnRadioButton">
-    <property name="geometry">
-     <rect>
-      <x>680</x>
-      <y>20</y>
-      <width>89</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>AFN</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="afnlRadioButton">
-    <property name="geometry">
-     <rect>
-      <x>680</x>
-      <y>40</y>
-      <width>89</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>AFN-lambda</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="apdRadioButton">
-    <property name="geometry">
-     <rect>
-      <x>680</x>
-      <y>60</y>
-      <width>89</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>APD</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="finalButton">
     <property name="geometry">
      <rect>
