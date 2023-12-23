@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include "Prod.h"
+#include <stack>
 
 class APD
 {
@@ -48,8 +49,11 @@ public:
 	void addFinalState(int state);
 	//add InitialState
 
-	//to do:
-	bool checkWord(const std::string& word) const;
+	bool checkWord(const std::vector<uint32_t> currentStates, 
+		const std::stack<char> currentStack, 
+		const std::string& word, 
+		const uint32_t& currentIndex);
+	bool verifyAutomaton();
 private:
 	uint16_t m_sizeQ;
 	uint16_t m_sizeSum;
@@ -60,6 +64,8 @@ private:
 	std::vector<char> m_Sum;
 	std::vector<Prod> m_Delta;
 	std::vector<char> m_Gamma;
+	std::vector<char> m_stackSum;
+	std::vector<char> m_Stack;
 	char m_Z0;
 	uint16_t m_q0;
 	std::vector<int> m_F;

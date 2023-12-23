@@ -215,9 +215,108 @@ void APD::addFinalState(int state)
 	m_sizeF = m_F.size();
 }
 
-bool APD::checkWord(const std::string& word) const
+bool APD::checkWord(const std::vector<uint32_t> currentStates, const std::stack<char> currentStack, const std::string& word, const uint32_t& currentIndex)
 {
-	return false;
+	if (currentIndex == word.size()
+		&& currentStack.size() == 1
+		&& currentStack.top() == m_Z0)
+		return true;
+	else if (currentStack.size() == 1 && currentStack.top() != m_Z0) return false;
+	else if (currentStack.size() < 1) return false;
+	std::vector<uint32_t> nextState;
+	std::stack<char> nextStack = currentStack;
+	bool transitionFound = false;
+	for (int currentState : currentStates)
+	{
+		for (auto transition : m_Delta)
+		{
+			if (transition.getInitialState() == currentState &&
+				transition.getAlphabet() == word[currentIndex] &&
+				transition.getTopStack() == currentStack.top())
+			{
+				transitionFound = true;
+				//pasi intermediari
+				nextState.emplace_back(transition.getFinalState());
+				if (!nextStack.empty())
+					nextStack.pop();
+				std::vector<char> finalStack = transition.getOverStack();
+				if (finalStack[0] == '~')
+					continue;
+				//era facuta original cu string, nu cu vector de char
+				std::reverse(finalStack.begin(), finalStack.end());
+				for (auto symbol : finalStack)
+				{
+					nextStack.push(symbol);
+				}
+			}
+		}
+	}
+	if (!transitionFound)
+		return false;
+	return checkWord(nextState, nextStack, word, currentIndex + 1);
+	//s ar putea sa crape la verificarea ultimei productii care verifica daca stiva e goala
+}
+
+bool APD::verifyAutomaton()
+{
+	if (std::find(m_Q.begin(), m_Q.end(), m_q0) == m_Q.end())
+	{
+		std::cout << "1";
+		return false;
+	}
+
+	if (std::find(m_stackSum.begin(), m_stackSum.end(), m_Z0) == m_stackSum.end())
+	{
+		std::cout << "2";
+		return false;
+	}
+
+	if (m_Q.size() == 0 || m_Sum.size() == 0 || m_Delta.size() == 0 || m_F.size() == 0)
+	{
+		std::cout << "3";
+		return false;
+	}
+
+	auto it = std::find(m_Q.begin(), m_Q.end(), m_q0);
+	if (it == m_Q.end())
+	{
+		std::cout << "4";
+		return false;
+	}
+
+	for (int i = 0; i < m_F.size(); i++)
+		if (std::find(m_Q.begin(), m_Q.end(), m_F[i]) == m_Q.end())
+		{
+			std::cout << "5";
+			return false;
+		}
+
+	for (int i = 0; i < m_Delta.size(); i++)
+		if ((std::find(m_Q.begin(), m_Q.end(), m_Delta[i].getInitialState()) == m_Q.end()
+			|| std::find(m_Sum.begin(), m_Sum.end(), m_Delta[i].getAlphabet()) == m_Sum.end()
+			|| std::find(m_Q.begin(), m_Q.end(), m_Delta[i].getFinalState()) == m_Q.end()
+			|| std::find(m_stackSum.begin(), m_stackSum.end(), m_Delta[i].getAlphabet()) == m_stackSum.end())
+			&& m_Delta[i].getAlphabet() != '~')
+		{
+			std::cout << "6";
+			return false;
+		}
+	for (int i = 0; i < m_Delta.size(); i++)
+	{
+		std::vector<char> check = m_Delta[i].getOverStack();
+		for (int j = 0; j < check.size(); j++)
+		{
+			if (check[j] == '~')
+				continue;
+			if (std::find(m_stackSum.begin(), m_stackSum.end(), check[j]) == m_stackSum.end())
+			{
+				std::cout << "7";
+				return false;
+			}
+		}
+
+	}
+	return true;
 }
 
 void APD::printGamma() const

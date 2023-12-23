@@ -109,7 +109,7 @@ void Automaton_Interface::showAutomatonTypeDialog()
     }
 }
 
-void Automaton_Interface::mouseReleaseEvent(QMouseEvent* e)
+void Automaton_Interface::mouseReleaseEvent(QMouseEvent* e) //to do: adauga construirea obj in bg pt APD!!!
 {
 	//if (nodeIsBeingDragged) {
 	//	nodeIsBeingDragged = false;
