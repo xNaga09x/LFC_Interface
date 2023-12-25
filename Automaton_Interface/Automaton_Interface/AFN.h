@@ -46,7 +46,12 @@ public:
 	void addTransition(int firstState, char symbol, int secondState);
 	void addSymbolToAlphabet(char symbol);
 	void addFinalState(int state);
-
+	//trebuie pusa pentru a elimina conflictul dintre checkWord si checkWordLambda,fiind doua functii diferite
+	bool checkWordLambda(const std::string& word) override
+	{
+		// Poate implementa o eroare aici sau l?sa nedefinit?
+		return false;
+	}
 	//verificare utilizand BackTracking (currentStates reprezinta starile de cuvinte,deoarece pot exista mai multe
 	//stari intr-un moment,word e cuv dat,iar currentIndex e litera curenta din cuvant)
 	bool checkWord(const std::unordered_set<int>& currentStates, const std::string& word, int currentIndex);

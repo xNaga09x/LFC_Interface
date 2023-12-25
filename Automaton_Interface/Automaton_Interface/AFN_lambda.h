@@ -48,9 +48,15 @@ public:
 	void addSymbolToAlphabet(char symbol);
 	void addFinalState(int state);
 
+	std::unordered_set<int> lambdaClosure(int state) const;
+	//trebuie pusa pentru a elimina conflictul dintre checkWord si checkWordLambda,fiind doua functii diferite
+	bool checkWord(const std::unordered_set<int>& currentStates, const std::string& word, int currentIndex) override
+	{
+		return false;
+	}
 	//verificare utilizand BackTracking (currentStates reprezinta starile de cuvinte,deoarece pot exista mai multe
 	//stari intr-un moment,word e cuv dat,iar currentIndex e litera curenta din cuvant)
-	bool checkWord(const std::unordered_set<int>& currentStates, const std::string& word, int currentIndex);
+	bool checkWordLambda(const std::string& word);
 
 	void readAutomaton(std::ifstream& file);
 

@@ -12,7 +12,7 @@ public:
 	virtual void readAutomaton(std::ifstream& file) = 0;
 	virtual bool verifyAutomaton() = 0;
 	virtual bool checkWord(const std::unordered_set<int>& currentStates, const std::string& word, int currentIndex) = 0;
-
+	virtual bool checkWordLambda(const std::string& word)=0;
 	virtual void addState(int stateValue) = 0; 
 	virtual void addTransition(int firstState, char symbol, int secondState) = 0;
 	virtual void addSymbolToAlphabet(char symbol) = 0;

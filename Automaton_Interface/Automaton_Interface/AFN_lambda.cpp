@@ -219,33 +219,60 @@ void AFN_lambda::addFinalState(int state)
 	m_sizeF = m_F.size();
 }
 
-bool AFN_lambda::checkWord(const std::unordered_set<int>& currentStates, const std::string& word, int currentIndex)
+std::unordered_set<int> AFN_lambda::lambdaClosure(int state) const
 {
-	//verific daca am parcurs cuvantul
-	if (currentIndex == word.size())
+	std::unordered_set<int> closure;
+	closure.insert(state);
+	bool addStates = true;
+	while (addStates)
 	{
-		//verific daca e cel putin o stare finala in starile curente
-		for (int state : currentStates)
-
-			if (std::find(m_F.begin(), m_F.end(), state) != m_F.end())
-				return true;
-		return false;
-	}
-	//verific tranzitiile pentru caracterul curent,verific fiecare drum pe care are
-	std::unordered_set<int> nextState;
-	for (int currentState : currentStates)
+		addStates = false;
 		for (auto transition : m_Delta)
 		{
-			// Verific daca exista tranzitie cu caracterul curent
-			if (std::get<0>(transition) == currentState && (std::get<1>(transition) == word[currentIndex] ||
-				std::get<1>(transition) == '\0'))
-				nextState.insert(std::get<2>(transition));
-			// Verific daca exista tranzitie lambda
-			if (std::get<0>(transition) == currentState && std::get<1>(transition) == '~')
-				nextState.insert(std::get<2>(transition));
+			//verifica daca litera este ~
+			//apoi verifica daca starea curenta este deja in lambda inchidere si starea urmatoare nu este deja in lambda inchidere
+			if (std::get<1>(transition) == '~' && closure.find(std::get<0>(transition)) != closure.end() && closure.find(std::get<2>(transition)) == closure.end())
+			{
+				closure.insert(std::get<2>(transition));
+				addStates = true;
+			}
+
 		}
-	//apeleare a urmatorului caracter
-	return checkWord(nextState, word, currentIndex + 1);
+	}
+	return closure;
+	//return std::unordered_set<int>();
+}
+
+bool AFN_lambda::checkWordLambda(const std::string& word)
+{
+	//calcularea lambda-inchidere a starii initiale
+	std::unordered_set<int> currentStates = lambdaClosure(m_q0);
+	//parcurgerea cuvantului
+	for (char letter : word)
+	{
+		//crearea urmatoarei parcurgeri
+		std::unordered_set<int > nextStates;
+
+		//determinarea starilor urmatoarea pentru simbol curent
+		for (int currentState : currentStates)
+		{
+			for (auto transition : m_Delta)
+				if (std::get<0>(transition) == currentState && (std::get<1>(transition) == letter || std::get<1>(transition) == '~'))
+				{
+					std::unordered_set<int> nextState = lambdaClosure(std::get<2>(transition));
+					nextStates.insert(nextState.begin(), nextState.end());
+				}
+		}
+		//actualizraea starii curente cu starea urmatoare
+		currentStates = nextStates;
+	}
+	//verifica daca starea curenta are cel putin o stare finala
+	for (int state : currentStates)
+	{
+		if (std::find(m_F.begin(), m_F.end(), state) != m_F.end())
+			return true;
+	}
+	return false;
 }
 
 void AFN_lambda::readAutomaton(std::ifstream& file)
