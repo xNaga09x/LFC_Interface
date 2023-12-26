@@ -22,6 +22,7 @@
 #include<QPainterPath>
 #include<QTransform>
 #include "TextBox.h"
+#include "WordBox.h"
 #include <QFileDialog>
 #include <QFile>
 #include <fstream>
@@ -32,6 +33,7 @@
 #include "AFN.h"
 #include "AFN_lambda.h"
 #include "APD.h"
+#include<QTimer>
 
 class Automaton_Interface : public QMainWindow
 {
@@ -45,12 +47,17 @@ public:
     virtual void mousePressEvent(QMouseEvent* e);
     virtual void mouseMoveEvent(QMouseEvent* e);
     QString openTextBox();
+    QString openWordBox();
+    void highlightNode(Node* node, QColor color);
+    void highlightArc(Arch* arc, QColor color);
+    void resetColors();
 public slots:
     void on_deleteButton_clicked();  // Slot pentru gestionarea evenimentului de clic pe buton
     void on_finalButton_clicked();  // Slot pentru gestionarea evenimentului de clic pe buton
     void on_dragButton_clicked();  // Slot pentru gestionarea evenimentului de clic pe buton
     void on_addFromFileButton_clicked(); // Slot pentru adaugarea unui automat dintr-un fisier
     void on_saveToFileButton_clicked(); // Slot pentru salvarea unui automat intr-un fisier
+    void on_testWordButton_clicked();
     //Slot-uri pentru tipul obiectului
     void showAutomatonTypeDialog();
 
@@ -71,4 +78,9 @@ private:
     bool dragMode;
     bool finalMode;
     bool deleteMode;  // Variabila pentru a tine evidenta starii de stergere
+
+    std::unordered_set<int> currentStates;
+    int currentIndex;
+    bool wordAccepted;
+
 };

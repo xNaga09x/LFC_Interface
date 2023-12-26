@@ -21,12 +21,13 @@ public:
     }
     Arch(Node* firstNode, Node* secondNode, const QString& label);
 
-    Node* getFirstNode() { return firstNode; }
-    Node* getSecondNode() { return secondNode; }
+    Node* getFirstNode()const { return firstNode; }
+    Node* getSecondNode()const { return secondNode; }
     QString getLabel() const;//Metoda pentru a obtine eticheta
     void setLabel(const QString& newLabel);//Metoda pentru a seta eticheta
     const QStringList& getElements() const;//Metoda pentru a obtine o lista de elemente
     void addElement(const QString& element);//Metoda pentru a adauga un element
+    QColor color;
 };
 
 #endif // ARCH_H

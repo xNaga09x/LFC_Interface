@@ -136,7 +136,7 @@ bool AFN_lambda::verifyAutomaton()
 	//Verifica daca elem lui m_Delta apartin lui m_Q,m_Sum,m_Q
 	for (int i = 0; i < m_sizeDelta; i++)
 		if (std::find(m_Q.begin(), m_Q.end(), std::get<0>(m_Delta[i])) == m_Q.end()
-			|| std::find(m_Sum.begin(), m_Sum.end(), std::get<1>(m_Delta[i])) == m_Sum.end()
+			|| (std::get<1>(m_Delta[i]) != '~' && std::find(m_Sum.begin(), m_Sum.end(), std::get<1>(m_Delta[i])) == m_Sum.end())
 			|| std::find(m_Q.begin(), m_Q.end(), std::get<2>(m_Delta[i])) == m_Q.end())
 		{
 			return false;

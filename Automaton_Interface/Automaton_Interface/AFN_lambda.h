@@ -7,7 +7,6 @@
 #include<algorithm>
 #include<unordered_set>
 #include<fstream>
-//to modify
 class AFN_lambda : public Automaton
 {
 public:

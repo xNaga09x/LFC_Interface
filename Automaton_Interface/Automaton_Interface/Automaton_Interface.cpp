@@ -15,6 +15,9 @@ Automaton_Interface::Automaton_Interface(QWidget* parent)
 	deleteMode = false;
 	dragMode = false;
 	//connect(ui.deleteButton, &QPushButton::clicked, this, &AutomatonInterface::onButtonClicked);
+	currentStates.clear();
+	currentIndex = 0;
+	wordAccepted = false;
 }
 
 Automaton_Interface::~Automaton_Interface()
@@ -82,6 +85,126 @@ void Automaton_Interface::on_saveToFileButton_clicked()
 	std::ofstream file(stringFileName);
 	automaton->printAutomaton(file);
 	file.close();
+}
+// Adăugați implementarea acestor funcții în fișierul .cpp al clasei Automaton_Interface
+void Automaton_Interface::highlightNode(Node* node, QColor color)
+{
+	// Implementați schimbarea culorii pentru nodul dat
+	node->color = color;
+	update();  // Asigurați-vă că actualizați interfața grafică
+}
+
+void Automaton_Interface::highlightArc(Arch* arc, QColor color)
+{
+	// Implementați schimbarea culorii pentru arcul dat
+	arc->color = color;
+	update();  // Asigurați-vă că actualizați interfața grafică
+}
+
+void Automaton_Interface::resetColors()
+{
+	// Implementați revenirea la culorile inițiale pentru toate nodurile și arcele automatului
+	for (Node* node : graf.getNodes())
+		node->color = Qt::black;  // Sau culoarea inițială a nodurilor
+
+	for (Arch* arc : graf.getArches())
+		arc->color = Qt::black;  // Sau culoarea inițială a arcelor
+
+	update();  // Asigurați-vă că actualizați interfața grafică
+}
+void Automaton_Interface::on_testWordButton_clicked()
+{
+	QString label = openWordBox();
+	if (!label.isEmpty())
+	{// Verificați tipul automatului
+		 // Verificați tipul automatului
+		// Verificați tipul automatului
+		if (automatonType == AutomatonType::AFDType)
+		{
+			currentStates = { automaton->getq0() };
+			currentIndex = 0;
+			wordAccepted = automaton->checkWord(currentStates, label.toStdString(), currentIndex);
+
+			// Clear previous animations
+			resetColors();
+
+			// Realizați animația
+			QTimer* animationTimer = new QTimer(this);
+			connect(animationTimer, &QTimer::timeout, [=]() {
+				if (currentIndex < label.length())
+				{
+					int currentStateValue = *currentStates.begin();
+					highlightNode(graf.getNodeByCoordinates(graf.getNodes()[currentStateValue]->getCoordinate()), QColor("green"));
+
+					std::unordered_set<int> nextStateSet;
+					for (int currentState : currentStates)
+					{
+						std::unordered_set<int> tempState = { currentState };
+						if (automaton->checkWord(tempState, label.toStdString(), currentIndex + 1))
+						{
+							int next = *tempState.begin();
+							nextStateSet.insert(next);
+						}
+					}
+
+					if (!nextStateSet.empty())
+					{
+						int nextState = *nextStateSet.begin();
+						highlightArc(graf.getArcByNodes(graf.getNodes()[currentStateValue], graf.getNodes()[nextState]), QColor("blue"));
+						currentStates.clear();
+						currentStates.insert(nextState);
+						currentIndex++;
+
+						// Update the GUI
+						update();
+					}
+					else
+					{
+						// Dacă nextStateSet este gol, cuvântul nu este acceptat
+						animationTimer->stop();
+						delete animationTimer;
+
+						// Afișați pop-up-ul cu rezultatul
+						if (wordAccepted)
+							QMessageBox::information(this, "Rezultat", "Cuvântul este acceptat!");
+						else
+							QMessageBox::warning(this, "Rezultat", "Cuvântul nu este acceptat!");
+					}
+				}
+				else
+				{
+					// Cuvântul a fost procesat complet
+					animationTimer->stop();
+					delete animationTimer;
+
+					// Afișați pop-up-ul cu rezultatul
+					if (wordAccepted)
+						QMessageBox::information(this, "Rezultat", "Cuvântul este acceptat!");
+					else
+						QMessageBox::warning(this, "Rezultat", "Cuvântul nu este acceptat!");
+				}
+				});
+
+			// Start the animation timer with a 2-second interval
+			animationTimer->start(2000);
+			animationTimer->setSingleShot(true); // Ensures that the timer stops after one shot
+		}
+		else if (automatonType == AutomatonType::AFNType)
+		{
+			// Automat de tip AFN
+			label = openWordBox();
+		}
+		else if (automatonType == AutomatonType::AFNLType)
+		{
+			// Automat de tip AFN_lambda
+			label = openWordBox();
+		}
+		else if (automatonType == AutomatonType::APDType)
+		{
+			// Automat de tip APD
+			label = openWordBox();
+		}
+	}
 }
 
 void Automaton_Interface::showAutomatonTypeDialog()
@@ -725,6 +848,17 @@ void Automaton_Interface::mouseMoveEvent(QMouseEvent* e) {
 QString Automaton_Interface::openTextBox()
 {
 	TextBox inputDialog;
+	QString labelEnt;
+	if (inputDialog.exec() == QDialog::Accepted)
+	{
+		labelEnt = inputDialog.getEnteredText();
+	}
+	return labelEnt;
+}
+
+QString Automaton_Interface::openWordBox()
+{
+	WordBox inputDialog;
 	QString labelEnt;
 	if (inputDialog.exec() == QDialog::Accepted)
 	{

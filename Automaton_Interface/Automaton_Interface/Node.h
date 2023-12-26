@@ -20,7 +20,7 @@ public:
     //    void setY(int y);
     //    void setCoordinate(int x, int y);
     int getValue();
-    QPoint getCoordinate()
+    QPoint getCoordinate() const
     {
         return coordinate; //if drag returns access violation
     }
@@ -35,6 +35,7 @@ public:
     const bool getFinalState();
     void setInitialState(bool state);
     const bool getInitialState();
+    QColor color;
 };
 
 #endif // NODE_H

@@ -79,6 +79,19 @@
      <string>Drag Nodes</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="testWordButton">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>120</y>
+      <width>75</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Test Word</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

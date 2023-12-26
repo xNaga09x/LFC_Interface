@@ -25,6 +25,19 @@ public:
     bool isArcUnique(Node* source, Node* target);
     bool arcExists(Node* node1, Node* node2) const;
     void removeNode(Node* node);
+    Node* getNodeByCoordinates(const QPoint& coordinates) const {
+        auto it = std::find_if(nodes.begin(), nodes.end(),
+            [coordinates](const Node* node) { return node->getCoordinate() == coordinates; });
+        return (it != nodes.end()) ? *it : nullptr;
+    }
+
+    Arch* getArcByNodes(const Node* sourceNode, const Node* targetNode) const {
+        auto it = std::find_if(arches.begin(), arches.end(),
+            [sourceNode, targetNode](const Arch* arc) {
+                return (arc->getFirstNode() == sourceNode && arc->getSecondNode() == targetNode);
+            });
+        return (it != arches.end()) ? *it : nullptr;
+    }
 };
 
 #endif // GRAPH_H
