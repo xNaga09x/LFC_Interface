@@ -2,6 +2,7 @@
 #include <iostream>
 #include "Prod.h"
 #include <stack>
+#include <fstream>
 
 class APD
 {
@@ -44,16 +45,20 @@ public:
 	void printAutomaton() const;
 
 	void addState(int state);
-	//add Transition
-	//add Symbol
+	void addTransition(Prod transition);
+	void addSymbol(char symbol);
+	void addStackSymbol(char symbol);
 	void addFinalState(int state);
-	//add InitialState
+	void addInitialState(int state);
 
 	bool checkWord(const std::vector<uint32_t> currentStates, 
 		const std::stack<char> currentStack, 
 		const std::string& word, 
 		const uint32_t& currentIndex);
 	bool verifyAutomaton();
+
+	void readAutomaton(std::ifstream& file);
+	void printAutomaton(std::ofstream& file);
 private:
 	uint16_t m_sizeQ;
 	uint16_t m_sizeSum;
@@ -64,7 +69,6 @@ private:
 	std::vector<char> m_Sum;
 	std::vector<Prod> m_Delta;
 	std::vector<char> m_Gamma;
-	std::vector<char> m_stackSum;
 	std::vector<char> m_Stack;
 	char m_Z0;
 	uint16_t m_q0;

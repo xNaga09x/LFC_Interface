@@ -217,10 +217,11 @@ void AFD::addTransition(int firstState, char symbol, int secondState)
 
 void AFD::addSymbolToAlphabet(char symbol)
 {
-	/*m_Sum.emplace_back(symbol);
-	m_sizeSum = m_Delta.size();*/
-	m_Sum.emplace_back(symbol);
-	m_sizeSum = m_Sum.size();  // Corectare aici
+	if (std::find(m_Sum.begin(), m_Sum.end(), symbol) == m_Sum.end())
+	{
+		m_Sum.emplace_back(symbol);
+		m_sizeSum = m_Sum.size();
+	}
 }
 
 void AFD::addFinalState(int state)

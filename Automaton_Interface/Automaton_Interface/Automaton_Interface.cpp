@@ -69,23 +69,25 @@ void Automaton_Interface::on_addFromFileButton_clicked()
 	}
 	else if (type == "APD")
 	{
-		//custom read from file APD
+		automatonPD.readAutomaton(file);
 	}
-	else exit(1); //nu s a citit un type valid	
+	else exit(1);
 
 	//apelare functie in maindow de desenare a automatului respectiv
+
 	file.close();
 }
 
 void Automaton_Interface::on_saveToFileButton_clicked()
 {
 	//Deschide file explorer-ul cu QFileDialog si pune absolute path-ul file-ului ales intr-un QString
-	QString fileName = QFileDialog::getOpenFileName(this, tr("Open Automaton"), "C:/", tr("Image Files(*.txt *.in)"));
+	QString fileName = QFileDialog::getOpenFileName(this, tr("Choose save file"), "C:/", tr("Image Files(*.txt *.in)"));
 	//Transforma QString to std::string
 	std::string stringFileName = fileName.toStdString();
-	//Deschide fisierul ales si salveaza automatul in el
 	std::ofstream file(stringFileName);
-	automaton->printAutomaton(file);
+	if (automatonType != AutomatonType::APDType)
+		automaton->printAutomaton(file);
+	else automatonPD.printAutomaton(file);
 	file.close();
 }
 // Adăugați implementarea acestor funcții în fișierul .cpp al clasei Automaton_Interface
@@ -396,7 +398,7 @@ void Automaton_Interface::showAutomatonTypeDialog()
     }
 }
 
-void Automaton_Interface::mouseReleaseEvent(QMouseEvent* e) //to do: adauga construirea obj in bg pt APD!!!
+void Automaton_Interface::mouseReleaseEvent(QMouseEvent* e)
 {
 	//if (nodeIsBeingDragged) {
 	//	nodeIsBeingDragged = false;
@@ -446,6 +448,7 @@ void Automaton_Interface::mouseReleaseEvent(QMouseEvent* e) //to do: adauga cons
 	else if (e->button() == Qt::LeftButton)
 	{
 		//sa verific daca exista nod
+		Prod p;
 		std::vector<Node*> nodes = graf.getNodes();
 		for (Node* n : nodes)
 		{
@@ -470,19 +473,36 @@ void Automaton_Interface::mouseReleaseEvent(QMouseEvent* e) //to do: adauga cons
 							QString secondLabel;
 							secondLabel = openTextBox();
 							labels.push_back(secondLabel);
+							if (j == 0)
+							{
+								p.setAlphabet(secondLabel.toStdString()[0]);
+								if(secondLabel.toStdString()[0]!='~')
+									automatonPD.addSymbol(secondLabel.toStdString()[0]);
+							}
+							else if (j == 1)
+							{
+								p.setTopStack(secondLabel.toStdString()[0]);
+								if (secondLabel.toStdString()[0] != '~')
+									automatonPD.addStackSymbol(secondLabel.toStdString()[0]);
+							}
+							else p.setOverStack(secondLabel.toStdString());
 						}
 						if (!graf.arcExists(firstNode, n))
 						{
 							graf.addAPDArch(firstNode, n, labels);
 							//adaug tranzitia corespunzatoare in obiectul APD
-							//...
+							p.setInitialState(firstNode->getValue());
+							p.setFinalState(n->getValue());
+							automatonPD.addTransition(p);
 						}
 						else
 						{
 							// Adaugare arc care se intoarce la acelasi nod
 							graf.addAPDArch(n, firstNode, labels);
 							//adaug tranzitia corespunzatoare in obiectul APD
-							//...
+							p.setInitialState(n->getValue());
+							p.setFinalState(firstNode->getValue());
+							automatonPD.addTransition(p);
 						}
 						firstNode = nullptr;
 					}
@@ -656,7 +676,7 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 				QStringList elements = a->getElements();
 				int elementY = middle.y() - 5;
 				int index = std::distance(arches.begin(), std::find(arches.begin(), arches.end(), a));
-				QRect elementRect(middle.x() - 5, elementY + 15, 10, 10);//crearea patratului coordonatele de pe stanga si dreapta,latimea si inaltimea dreptunghiului
+				QRect elementRect(middle.x() - 5, elementY + 15, 40, 40);//crearea patratului coordonatele de pe stanga si dreapta,latimea si inaltimea dreptunghiului
 				p.drawText(elementRect, Qt::AlignCenter, a->getLabel());//element);
 				elementY += 15;//Spatiile intre elemente
 			}

@@ -209,8 +209,11 @@ void AFN_lambda::addTransition(int firstState, char symbol, int secondState)
 
 void AFN_lambda::addSymbolToAlphabet(char symbol)
 {
-	m_Sum.emplace_back(symbol);
-	m_sizeSum = m_Sum.size();
+	if (std::find(m_Sum.begin(), m_Sum.end(), symbol) == m_Sum.end())
+	{
+		m_Sum.emplace_back(symbol);
+		m_sizeSum = m_Sum.size();
+	}
 }
 
 void AFN_lambda::addFinalState(int state)
