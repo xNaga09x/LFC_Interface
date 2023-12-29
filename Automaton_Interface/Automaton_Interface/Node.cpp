@@ -10,6 +10,8 @@ Node::Node()
     y = -1;
     InitialState = false;
     FinalState = false;
+    coordinate.setX(0);
+    coordinate.setY(0);
 }
 
 void Node::setValue(int value)

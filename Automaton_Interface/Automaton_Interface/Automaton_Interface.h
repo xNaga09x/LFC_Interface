@@ -34,7 +34,8 @@
 #include "AFN_lambda.h"
 #include "APD.h"
 #include<QTimer>
-
+#include<QThread>
+#include<QProgressDialog>
 class Automaton_Interface : public QMainWindow
 {
     Q_OBJECT
@@ -83,4 +84,8 @@ private:
     int currentIndex;
     bool wordAccepted;
 
+    /*std::vector<Arch*> archAnimation;
+    std::vector<Node*>nodeAnimation;
+    bool nodeAnimation;
+    bool archAnimation;*/
 };

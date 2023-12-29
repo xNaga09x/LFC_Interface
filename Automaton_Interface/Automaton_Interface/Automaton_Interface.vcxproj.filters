@@ -85,9 +85,6 @@
     <ClCompile Include="WordBox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AnimationInterface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Node.h">
@@ -134,15 +131,9 @@
     <QtMoc Include="WordBox.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-    <QtMoc Include="AnimationInterface.h">
-      <Filter>Header Files</Filter>
-    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="AutomatonTypeDialog.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
-    <QtUic Include="AnimationInterface.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

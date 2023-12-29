@@ -92,7 +92,6 @@
     <ClCompile Include="AFD.cpp" />
     <ClCompile Include="AFN.cpp" />
     <ClCompile Include="AFN_lambda.cpp" />
-    <ClCompile Include="AnimationInterface.cpp" />
     <ClCompile Include="APD.cpp" />
     <ClCompile Include="APDArch.cpp" />
     <ClCompile Include="Arch.cpp" />
@@ -105,7 +104,6 @@
     <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="WordBox.cpp" />
     <QtRcc Include="Automaton_Interface.qrc" />
-    <QtUic Include="AnimationInterface.ui" />
     <QtUic Include="AutomatonTypeDialog.ui" />
     <QtUic Include="Automaton_Interface.ui" />
     <QtMoc Include="Automaton_Interface.h" />
@@ -116,7 +114,6 @@
     <ClInclude Include="AFD.h" />
     <ClInclude Include="AFN.h" />
     <ClInclude Include="AFN_lambda.h" />
-    <QtMoc Include="AnimationInterface.h" />
     <ClInclude Include="APD.h" />
     <ClInclude Include="APDArch.h" />
     <ClInclude Include="Arch.h" />
