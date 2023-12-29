@@ -19,6 +19,9 @@ Graph::Graph(const Graph& other)
         arches.push_back(newArch);
     }
 }
+Graph::Graph(const std::vector<Node*>& initialNodes) : nodes(initialNodes)
+{
+}
 std::vector<Node*>& Graph::getNodes()
 {
     return nodes;

@@ -24,6 +24,9 @@ public:
     {
         return coordinate; //if drag returns access violation
     }
+    int getId() const {
+        return value;
+    }
     int getX();
     int getY();
     bool isOverlapping(const Node& other) const;

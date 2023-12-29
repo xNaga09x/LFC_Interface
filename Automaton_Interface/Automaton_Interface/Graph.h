@@ -14,6 +14,7 @@ class Graph
 public:
     Graph();
     Graph(const Graph& other);
+    Graph(const std::vector<Node*>& initialNodes);
     std::vector<Node*>& getNodes();
     std::vector<Arch*>& getArches();
     std::vector<APDArch*>& getAPDArches();
@@ -31,6 +32,33 @@ public:
         return (it != nodes.end()) ? *it : nullptr;
     }
 
+    Node* getNodeById(int nodeId)  {
+        auto it = std::find_if(nodes.begin(), nodes.end(),
+            [nodeId](const Node* node) { return node->getId() == nodeId; });
+        return (it != nodes.end()) ? *it : nullptr;
+    }
+
+   ///* Arch* getArcByNodes(const Node* sourceNode, const Node* targetNode) const {
+   //     auto it = std::find_if(arches.begin(), arches.end(),
+   //         [sourceNode, targetNode](const Arch* arc) {
+   //             return (arc->getFirstNode() == sourceNode && arc->getSecondNode() == targetNode);
+   //         });
+   //     return (it != arches.end()) ? *it : nullptr;
+   // }*/
+   // Arch* getArcByNodes(const Node* sourceNode, const Node* targetNode) const {
+   //     if (sourceNode == nullptr || targetNode == nullptr) {
+   //         // Nu avem noduri valide pentru c?utare, return?m nullptr
+   //         return nullptr;
+   //     }
+
+   //     auto it = std::find_if(arches.begin(), arches.end(),
+   //         [sourceNode, targetNode](const Arch* arc) {
+   //             return (arc->getFirstNode() == sourceNode && arc->getSecondNode() == targetNode);
+   //         });
+
+   //     // Return?m nullptr dac? nu g?sim arcul
+   //     return (it != arches.end()) ? *it : nullptr;
+   // }
     Arch* getArcByNodes(const Node* sourceNode, const Node* targetNode) const {
         auto it = std::find_if(arches.begin(), arches.end(),
             [sourceNode, targetNode](const Arch* arc) {

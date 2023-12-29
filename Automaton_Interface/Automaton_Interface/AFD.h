@@ -7,6 +7,9 @@
 #include<algorithm>
 #include<unordered_set>
 #include<fstream>
+#include"Graph.h"
+#include"Node.h"
+#include"Arch.h"
 class AFD : public Automaton
 {
 public:
@@ -57,11 +60,17 @@ public:
 	//verificare utilizand BackTracking (currentStates reprezinta starile de cuvinte,deoarece pot exista mai multe
 	//stari intr-un moment,word e cuv dat,iar currentIndex e litera curenta din cuvant)
 	bool checkWord(const std::unordered_set<int>& currentStates, const std::string& word, int currentIndex);
-
+	/*std::pair<std::vector<Node*>, std::vector<Arch*>> checkWord1(const std::unordered_set<int>& currentStates,
+		const std::string& word, int currentIndex);*/
+	std::pair<std::unordered_set<Node*>, std::unordered_set<Arch*>> checkWordDetails(const std::unordered_set<int>& 
+		currentStates, const std::string& word, int currentIndex);
 	void readAutomaton(std::ifstream& file);
 
 	void printAutomaton(std::ofstream& file);
 
+	Graph& getGraph() {
+		return m_graf;
+	}
 private:
 	uint16_t m_sizeQ;
 	uint16_t m_sizeSum;
@@ -72,4 +81,5 @@ private:
 	std::vector<std::tuple<int, char, int>> m_Delta;//functiile de tranzitie
 	uint16_t m_q0;//starea initiala
 	std::vector<int> m_F;//stari finale
+	Graph m_graf;
 };

@@ -84,8 +84,8 @@ private:
     int currentIndex;
     bool wordAccepted;
 
-    /*std::vector<Arch*> archAnimation;
-    std::vector<Node*>nodeAnimation;
+    std::vector<Arch*> archAnimations;
+    std::vector<Node*>nodeAnimations;
     bool nodeAnimation;
-    bool archAnimation;*/
+    bool archAnimation;
 };

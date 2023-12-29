@@ -18,8 +18,8 @@ Automaton_Interface::Automaton_Interface(QWidget* parent)
 	currentStates.clear();
 	currentIndex = 0;
 	wordAccepted = false;
-	/*nodeAnimation = false;
-	archAnimation = false;*/
+	nodeAnimation = false;
+	archAnimation = false;
 }
 
 Automaton_Interface::~Automaton_Interface()
@@ -124,7 +124,27 @@ void Automaton_Interface::on_testWordButton_clicked()
 		if (automatonType == AutomatonType::AFDType)
 		{
 			// Automat de tip AFD
-			label = openWordBox();
+			//label = openWordBox();
+			std::vector<Arch*>& arches = graf.getArches();
+			for (int i = 0; i < arches.size(); i++)
+				currentStates.insert(i);
+			//currentStates = { automaton->getq0() };
+			currentIndex = 0;
+			auto closestResults = dynamic_cast<AFD*>(automaton)->checkWordDetails(currentStates, label.toStdString(), currentIndex);
+			nodeAnimations.clear();
+			archAnimations.clear();
+			for (Node* node : closestResults.first)
+			{
+				nodeAnimations.push_back(node);
+			}
+
+			for (Arch* arch : closestResults.second)
+			{
+				archAnimations.push_back(arch);
+			}
+			nodeAnimation = !nodeAnimation;
+			archAnimation = !archAnimation;
+			update();
 		}
 		else if (automatonType == AutomatonType::AFNType)
 		{
@@ -510,7 +530,6 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 			p.setPen(outerPen);
 			p.drawEllipse(outerRect);
 		}
-
 		if (n->getInitialState())
 		{
 			//Desenarea sagetii pentru nodul initial
@@ -540,6 +559,54 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 
 		QString s = "q" + QString::number(n->getValue());
 		p.drawText(r, Qt::AlignCenter, s);
+		if (nodeAnimation&& std::find(nodeAnimations.begin(), nodeAnimations.end(), n) != nodeAnimations.end())
+		{
+			//QPen innerPen(Qt::blue); // Culoarea și grosimea conturului cercului interior
+			//innerPen.setWidth(2);
+			//p.setPen(innerPen);
+			//if(std::find(nodeAnimations.begin(),nodeAnimations.end(),n)!=nodeAnimations.end())
+			//	p.drawEllipse(r);
+			//QString s = "q" + QString::number(n->getValue());
+			//p.drawText(r, Qt::AlignCenter, s);
+			QRect outerRect(n->getX() - 15, n->getY() - 15, 30, 30); // Dimensiunile cercului exterior
+			QRect r(n->getX() - 10, n->getY() - 10, 20, 20);//xr=xnode-10 yr=yn-10 si dim dreptunghiului
+			if (n->getFinalState())
+			{
+				QPen outerPen(Qt::blue); // Culoarea și grosimea conturului cercului exterior
+				outerPen.setWidth(2);
+				p.setPen(outerPen);
+				p.drawEllipse(outerRect);
+			}
+			if (n->getInitialState())
+			{
+				//Desenarea sagetii pentru nodul initial
+				QPen initialPen(Qt::blue);
+				initialPen.setWidth(2);
+				p.setPen(initialPen);
+
+				QPointF aux(n->getX() - 20, n->getY() - 20);
+				QPointF aux2(n->getX() - 7.5, n->getY() - 7.5);
+				p.drawLine(aux, aux2);
+
+				double arrowSize = 10.0;
+				double arrowAngle = atan2(aux2.y() - aux.y(), aux2.x() - aux.x());
+
+				QPointF arrowP1 = QPointF(aux2.x() - arrowSize * cos(arrowAngle + M_PI / 6),
+					aux2.y() - arrowSize * sin(arrowAngle + M_PI / 6));
+				QPointF arrowP2 = QPointF(aux2.x() - arrowSize * cos(arrowAngle - M_PI / 6),
+					aux2.y() - arrowSize * sin(arrowAngle - M_PI / 6));
+					p.drawLine(aux2, arrowP1);
+					p.drawLine(aux2, arrowP2);
+			}
+
+			QPen innerPen(Qt::blue); // Culoarea și grosimea conturului cercului interior
+			innerPen.setWidth(2);
+			p.setPen(innerPen);
+			p.drawEllipse(r);
+
+			QString s = "q" + QString::number(n->getValue());
+			p.drawText(r, Qt::AlignCenter, s);
+		}
 	}
 	std::vector<Arch*>& arches = graf.getArches();
 	std::vector<APDArch*>& apd_arches = graf.getAPDArches();
@@ -547,7 +614,7 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 		//Cazul in care avem automat !=APD
 	{
 		for (Arch* a : arches)//desenam linie intre coordonatele primului si al doilea nod
-			//Cazul in care avem arc de la un nod la el insusi
+		{	//Cazul in care avem arc de la un nod la el insusi
 		//Cazul in care avem arc de la un nod tot la el
 			if (a->getFirstNode()->getValue() == a->getSecondNode()->getValue())
 			{
@@ -593,7 +660,7 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 				p.drawText(elementRect, Qt::AlignCenter, a->getLabel());//element);
 				elementY += 15;//Spatiile intre elemente
 			}
-		//Cazul in care avem arc intre 2 noduri diferite
+			//Cazul in care avem arc intre 2 noduri diferite
 			else
 			{
 				//verifica daca am arc de la nod la celalalt si invers
@@ -725,6 +792,13 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 					p.drawText(r, Qt::AlignCenter, s);
 				}
 			}
+			if (archAnimation)
+			{
+				p.setPen(QPen(Qt::blue, 2));
+				if (std::find(archAnimations.begin(), archAnimations.end(), a) != archAnimations.end())
+					p.drawLine(a->getFirstNode()->getCoordinate(), a->getSecondNode()->getCoordinate());
+			}
+		}
 	}
 	else
 	{
