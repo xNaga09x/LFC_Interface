@@ -92,6 +92,19 @@
      <string>Test Word</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="verifyWordsButton">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>140</y>
+      <width>75</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Verify Words</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

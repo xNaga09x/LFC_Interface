@@ -12,6 +12,7 @@
 #include <QMouseEvent>
 #include <QFile>
 #include <QTextEdit>
+#include<QTextStream>
 #include<QFileDialog>
 #include <QPainter>
 #include <QPen>
@@ -36,6 +37,7 @@
 #include<QTimer>
 #include<QThread>
 #include<QProgressDialog>
+#include<stack>
 class Automaton_Interface : public QMainWindow
 {
     Q_OBJECT
@@ -59,6 +61,7 @@ public slots:
     void on_addFromFileButton_clicked(); // Slot pentru adaugarea unui automat dintr-un fisier
     void on_saveToFileButton_clicked(); // Slot pentru salvarea unui automat intr-un fisier
     void on_testWordButton_clicked();
+    void on_verifyWordsButton_clicked();
     //Slot-uri pentru tipul obiectului
     void showAutomatonTypeDialog();
 

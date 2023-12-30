@@ -137,4 +137,12 @@
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="WordstoVerify.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="WordsVerifyed.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+  </ItemGroup>
 </Project>

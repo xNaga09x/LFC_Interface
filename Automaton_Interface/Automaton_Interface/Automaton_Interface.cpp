@@ -165,6 +165,95 @@ void Automaton_Interface::on_testWordButton_clicked()
 		}
 	}
 }
+void Automaton_Interface::on_verifyWordsButton_clicked()
+{
+	if (automatonType == AutomatonType::AFDType)
+	{
+		std::ifstream inputFile("WordstoVerify.txt");
+		std::ofstream outputFile("WordsVerifyed.txt");
+		std::string word;
+		std::vector<Arch*>& arches = graf.getArches();
+		for (int i = 0; i < arches.size(); i++)
+			currentStates.insert(i);
+		//currentStates = { automaton->getq0() };
+		currentIndex = 0;
+		while (inputFile >> word)
+		{
+			bool verify = automaton->checkWord(currentStates, word, currentIndex);
+			if (verify)
+				outputFile << word << '-' << "este acceptat"<<'\n';
+			else
+				outputFile << word << '-' << "nu este acceptat"<<'\n';
+		}
+		inputFile.close();
+		outputFile.close();
+	}
+	else if (automatonType == AutomatonType::AFNType)
+	{
+		std::ifstream inputFile("WordstoVerify.txt");
+		std::ofstream outputFile("WordsVerifyed.txt");
+		std::string word;
+		std::vector<Arch*>& arches = graf.getArches();
+		for (int i = 0; i < arches.size(); i++)
+			currentStates.insert(i);
+		//currentStates = { automaton->getq0() };
+		currentIndex = 0;
+		while (inputFile >> word)
+		{
+			bool verify = automaton->checkWord(currentStates, word, currentIndex);
+			if (verify)
+				outputFile << word << '-' << "este acceptat" << '\n';
+			else
+				outputFile << word << '-' << "nu este acceptat" << '\n';
+		}
+		inputFile.close();
+		outputFile.close();
+	}
+	else if (automatonType == AutomatonType::AFNLType)
+	{
+		std::ifstream inputFile("WordstoVerify.txt");
+		std::ofstream outputFile("WordsVerifyed.txt");
+		std::string word;
+		std::vector<Arch*>& arches = graf.getArches();
+		for (int i = 0; i < arches.size(); i++)
+			currentStates.insert(i);
+		//currentStates = { automaton->getq0() };
+		currentIndex = 0;
+		while (inputFile >> word)
+		{
+			bool verify = automaton->checkWordLambda(word);
+			if (verify)
+				outputFile << word << '-' << "este acceptat" << '\n';
+			else
+				outputFile << word << '-' << "nu este acceptat" << '\n';
+		}
+		inputFile.close();
+		outputFile.close();
+	}
+	else if (automatonType == AutomatonType::APDType)
+	{
+		std::ifstream inputFile("WordstoVerify.txt");
+		std::ofstream outputFile("WordsVerifyed.txt");
+		std::string word;
+		std::vector<Arch*>& arches = graf.getArches();
+		for (int i = 0; i < arches.size(); i++)
+			currentStates.insert(i);
+		//currentStates = { automaton->getq0() };
+		currentIndex = 0;
+		std::stack<char> currentStack;
+		std::vector<uint32_t> currentStatesVector(currentStates.begin(), currentStates.end());
+		while (inputFile >> word)
+		{
+			bool verify = automatonPD.checkWord(currentStatesVector,currentStack,word,currentIndex);
+			if (verify)
+				outputFile << word << '-' << "este acceptat" << '\n';
+			else
+				outputFile << word << '-' << "nu este acceptat" << '\n';
+		}
+		inputFile.close();
+		outputFile.close();
+	}
+}
 //void Automaton_Interface::on_testWordButton_clicked()
 //{
 //	QString label = openWordBox();
@@ -276,6 +365,7 @@ void Automaton_Interface::on_testWordButton_clicked()
 //		}
 //	}
 //}
+
 //void Automaton_Interface::on_testWordButton_clicked()
 //{
 //	// Deschideți un dialog pentru introducerea cuvântului
@@ -373,6 +463,7 @@ void Automaton_Interface::on_testWordButton_clicked()
 //		// ... (Implementați tratamentul pentru tipul APD)
 //	}
 //}
+
 void Automaton_Interface::showAutomatonTypeDialog()
 {
 	AutomatonTypeDialog dialog(this);
