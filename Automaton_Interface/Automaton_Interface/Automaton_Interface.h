@@ -38,6 +38,8 @@
 #include<QThread>
 #include<QProgressDialog>
 #include<stack>
+#include <random>
+#include <unordered_set>
 class Automaton_Interface : public QMainWindow
 {
     Q_OBJECT

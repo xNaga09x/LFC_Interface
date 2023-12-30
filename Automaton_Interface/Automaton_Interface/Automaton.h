@@ -22,6 +22,8 @@ public:
 
 	virtual void setSizeQ(const uint16_t& size) = 0;
 	virtual std::vector<int> getQ() const = 0;
+	virtual std::vector<std::tuple<int, char, int>> getDelta() const = 0;
+	virtual std::vector<int> getF() const = 0;
 	//adauga toti get/set (orice functie pe care trebuie sa o accesez in mainWindow)
 
 	uint16_t getq0() const 
