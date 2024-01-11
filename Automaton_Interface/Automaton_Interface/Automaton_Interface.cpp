@@ -218,8 +218,8 @@ void Automaton_Interface::on_testWordButton_clicked()
 {
 	QString label = openWordBox();
 	if (!label.isEmpty())
-	{// Verificați tipul automatului
-		 // Verificați tipul automatului
+	{
+		
 		// Verificați tipul automatului
 		if (automatonType == AutomatonType::AFDType)
 		{
@@ -244,22 +244,64 @@ void Automaton_Interface::on_testWordButton_clicked()
 			}
 			nodeAnimation = !nodeAnimation;
 			archAnimation = !archAnimation;
+			for (int i = 0; i < arches.size(); i++)
+				currentStates.insert(i);
+			//currentStates = { automaton->getq0() };
+			std::string word = label.toStdString();
+			currentIndex = 0;
+
+			bool verify = automaton->checkWord(currentStates, word, currentIndex);
+			if (verify)
+				QMessageBox::information(this, "Testare","Cuvantul "+ label + " este acceptat");
+			else
+				QMessageBox::information(this, "Testare", "Cuvantul " + label + " nu este acceptat");
 			update();
 		}
 		else if (automatonType == AutomatonType::AFNType)
 		{
 			// Automat de tip AFN
+			std::vector<Arch*>& arches = graf.getArches();
 			label = openWordBox();
+			for (int i = 0; i < arches.size(); i++)
+				currentStates.insert(i);
+			//currentStates = { automaton->getq0() };
+			std::string word = label.toStdString();
+			currentIndex = 0;
+
+			bool verify = automaton->checkWord(currentStates, word, currentIndex);
+			if (verify)
+				QMessageBox::information(this, "Testare", "Cuvantul " + label + " este acceptat");
+			else
+				QMessageBox::information(this, "Testare", "Cuvantul " + label + " nu este acceptat");
 		}
 		else if (automatonType == AutomatonType::AFNLType)
 		{
 			// Automat de tip AFN_lambda
 			label = openWordBox();
+			std::string word = label.toStdString();
+			bool verify = automaton->checkWordLambda(word);
+			if (verify)
+				QMessageBox::information(this, "Testare", "Cuvantul " + label + " este acceptat");
+			else
+				QMessageBox::information(this, "Testare", "Cuvantul " + label + " nu este acceptat");
 		}
 		else if (automatonType == AutomatonType::APDType)
 		{
 			// Automat de tip APD
 			label = openWordBox();
+			std::string word = label.toStdString();
+			std::vector<Arch*>& arches = graf.getArches();
+			for (int i = 0; i < arches.size(); i++)
+				currentStates.insert(i);
+			//currentStates = { automaton->getq0() };
+			currentIndex = 0;
+			std::stack<char> currentStack;
+			std::vector<uint32_t> currentStatesVector(currentStates.begin(), currentStates.end());
+			bool verify = automatonPD.checkWord(currentStatesVector, currentStack, word, currentIndex);
+			if (verify)
+				QMessageBox::information(this, "Testare", "Cuvantul " + label + " este acceptat");
+			else
+				QMessageBox::information(this, "Testare", "Cuvantul " + label + " nu este acceptat");
 		}
 	}
 }
@@ -865,7 +907,7 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 				QStringList elements = a->getElements();
 				int elementY = middle.y() - 5;
 				int index = std::distance(arches.begin(), std::find(arches.begin(), arches.end(), a));
-				QRect elementRect(middle.x() - 5, elementY + 15, 40, 40);//crearea patratului coordonatele de pe stanga si dreapta,latimea si inaltimea dreptunghiului
+				QRect elementRect(middle.x() - 40, elementY - 30, 40, 40);//crearea patratului coordonatele de pe stanga si dreapta,latimea si inaltimea dreptunghiului
 				p.drawText(elementRect, Qt::AlignCenter, a->getLabel());//element);
 				elementY += 15;//Spatiile intre elemente
 			}
@@ -992,7 +1034,7 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 				{
 					QRect r(firstNode->getX() - 10, firstNode->getY() - 10, 20, 20);
 					QPen pen;
-					pen.setColor(Qt::red);
+					//pen.setColor(Qt::red);
 					pen.setWidth(2);
 					p.setPen(pen);
 					p.drawEllipse(r);
@@ -1053,7 +1095,7 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 				a->setNoLabels(a->getLabels().size());
 				for (int i = 0; i < a->getNoLabels(); i++)
 				{
-					QRect elementRect(middle.x() - 5, elementY + 15, 10, 10);
+					QRect elementRect(middle.x() - 30, elementY + 10, 10, 10);
 					p.drawText(elementRect, Qt::AlignCenter, a->getLabels()[i]);//element);
 					elementY -= 15;//Spatiile intre elemente
 				}
@@ -1061,95 +1103,6 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 		//Cazul in care avem arc intre 2 noduri diferite
 			else
 			{
-				////verifica daca am arc de la nod la celalalt si invers
-				//bool existForward = graf.arcExists(a->getFirstNode(), a->getSecondNode());
-				//bool existBackward = graf.arcExists(a->getSecondNode(), a->getFirstNode());
-				////verifica arcul daca este de la primul la al doilea sau nu
-				//bool isForward = a->getFirstNode()->getX() < a->getSecondNode()->getX();
-				//bool isBackward = a->getFirstNode()->getX() > a->getSecondNode()->getX();
-				////verifica daca exista arcul de la un nod la altul si invers 
-				//if (existForward && existBackward)
-				//{
-				//	//face arcul de la primul nod la al doilea
-				//	if (isForward)
-				//	{
-				//		// Calculeaza pozitiile de start si sfarsit pentru arcul in directia initiala
-				//		double separation = 7.0;
-				//		double angle = atan2(a->getSecondNode()->getY() - a->getFirstNode()->getY(),
-				//			a->getSecondNode()->getX() - a->getFirstNode()->getX());
-				//		double arrowSize = 10.0;
-
-				//		QPointF startForward = QPointF(a->getFirstNode()->getX() + cos(angle) * (arrowSize),
-				//			a->getFirstNode()->getY() + sin(angle) * (arrowSize)-separation);
-				//		QPointF endForward = QPointF(a->getSecondNode()->getX() - cos(angle) * (arrowSize),
-				//			a->getSecondNode()->getY() - sin(angle) * (arrowSize)-separation);
-
-				//		// Deseneaza arcul în directia initiala
-				//		p.drawLine(startForward, endForward);
-				//		QPointF arrowP1Forward = QPointF(endForward.x() - arrowSize * cos(angle - M_PI / 6),
-				//			endForward.y() - arrowSize * sin(angle - M_PI / 6));
-				//		QPointF arrowP2Forward = QPointF(endForward.x() - arrowSize * cos(angle + M_PI / 6),
-				//			endForward.y() - arrowSize * sin(angle + M_PI / 6));
-				//		p.drawLine(endForward, arrowP1Forward);
-				//		p.drawLine(endForward, arrowP2Forward);
-				//		// Calcularea mijlocului arcului
-				//		QPointF middleForward = (a->getFirstNode()->getCoordinate() + a->getSecondNode()->getCoordinate()) / 2.0;
-
-				//		// Desenarea elementelor in mijlocul arcului
-				//		QStringList elementsForward = a->getElements();
-
-				//		// Ajusteaza inaltimea pentru a fi pozitionat mai aproape de arc
-				//		int elementYForward = middleForward.y() - 7;
-
-				//		a->setNoLabels(a->getLabels().size());
-				//		for (int i = 0; i < a->getNoLabels(); i++)
-				//		{
-				//			QRect elementRectForward(middleForward.x() - 5, elementYForward, 10, 10);
-				//			p.drawText(elementRectForward, Qt::AlignCenter, a->getLabels()[i]);
-				//			elementYForward += 15;
-				//		}
-				//	}
-				//	else
-				//		//face arcul de la al doilea nod la primul
-				//		if (isBackward)
-				//		{
-				//			// Calculeaza pozitiile de start si sfarsit pentru arcul in directia inversa
-				//			double separationBackward = 6.0;
-				//			double angleBackward = atan2(a->getSecondNode()->getY() - a->getFirstNode()->getY(),
-				//				a->getSecondNode()->getX() - a->getFirstNode()->getX());
-				//			double arrowSize = 10.0;
-				//			QPointF startBackward = QPointF(a->getFirstNode()->getX() + cos(angleBackward) * (arrowSize),
-				//				a->getFirstNode()->getY() + sin(angleBackward) * (arrowSize)+separationBackward);
-				//			QPointF endBackward = QPointF(a->getSecondNode()->getX() - cos(angleBackward) * (arrowSize),
-				//				a->getSecondNode()->getY() - sin(angleBackward) * (arrowSize)+separationBackward);
-
-				//			// Deseneaza arcul in directia inversa
-				//			p.drawLine(startBackward, endBackward);
-				//			QPointF arrowP1Backward = QPointF(endBackward.x() - arrowSize * cos(angleBackward - M_PI / 6),
-				//				endBackward.y() - arrowSize * sin(angleBackward - M_PI / 6));
-				//			QPointF arrowP2Backward = QPointF(endBackward.x() - arrowSize * cos(angleBackward + M_PI / 6),
-				//				endBackward.y() - arrowSize * sin(angleBackward + M_PI / 6));
-				//			p.drawLine(endBackward, arrowP1Backward);
-				//			p.drawLine(endBackward, arrowP2Backward);
-				//			// Calcularea mijlocului arcului
-				//			QPointF middleBackward = (a->getFirstNode()->getCoordinate() + a->getSecondNode()->getCoordinate()) / 2.0;
-
-				//			// Desenarea elementelor in mijlocul arcului
-				//			QStringList elementsBackward = a->getElements();
-				//			int elementYBackward = middleBackward.y() - 5;
-
-				//			a->setNoLabels(a->getLabels().size());
-				//			for (int i = 0; i < a->getNoLabels(); i++)
-				//			{
-				//				QRect elementRectBackward(middleBackward.x() - 5, elementYBackward + 15, 10, 10);
-				//				p.drawText(elementRectBackward, Qt::AlignCenter, a->getLabels()[i]);
-				//				elementYBackward += 15;
-				//			}
-				//		}
-				//}
-				/*else
-				{*/
-				//Cazul in care avem arc intre 2 noduri diferite
 				double angle = atan2(a->getSecondNode()->getY() - a->getFirstNode()->getY(),
 					a->getSecondNode()->getX() - a->getFirstNode()->getX());
 				double arrowSize = 10.0; // Ajustarea dimensiunii sagetii dupa preferinta
@@ -1180,7 +1133,7 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 				a->setNoLabels(a->getLabels().size());
 				for (int i = 0; i < a->getNoLabels(); i++)
 				{
-					QRect elementRect(middle.x() - 5, elementY + 15, 10, 10);
+					QRect elementRect(middle.x() - 5, elementY + 15, 50, 10);
 					p.drawText(elementRect, Qt::AlignCenter, a->getLabels()[i]);
 					elementY += 15;
 				}
@@ -1190,7 +1143,7 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 				{
 					QRect r(firstNode->getX() - 10, firstNode->getY() - 10, 20, 20);
 					QPen pen;
-					pen.setColor(Qt::red);
+					//pen.setColor(Qt::red);
 					pen.setWidth(2);
 					p.setPen(pen);
 					p.drawEllipse(r);

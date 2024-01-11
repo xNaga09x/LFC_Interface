@@ -40,6 +40,9 @@
 #include<stack>
 #include <random>
 #include <unordered_set>
+#include <QLabel>
+#include <QVBoxLayout>
+
 class Automaton_Interface : public QMainWindow
 {
     Q_OBJECT
@@ -93,4 +96,6 @@ private:
     std::vector<Node*>nodeAnimations;
     bool nodeAnimation;
     bool archAnimation;
+
+    QLabel* wordLabel;
 };
