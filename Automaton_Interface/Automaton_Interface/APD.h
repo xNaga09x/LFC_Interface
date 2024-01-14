@@ -51,10 +51,8 @@ public:
 	void addFinalState(int state);
 	void addInitialState(int state);
 
-	bool checkWord(const std::vector<uint32_t> currentStates, 
-		const std::stack<char> currentStack, 
-		const std::string& word, 
-		const uint32_t& currentIndex);
+	bool checkWord(uint32_t currentState, std::stack<char>& stack, std::string word);
+	std::vector<std::pair<int, std::string>> findProdResult(std::tuple<int, char, char> prodInput);
 	bool verifyAutomaton();
 
 	void readAutomaton(std::ifstream& file);

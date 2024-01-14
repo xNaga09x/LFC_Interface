@@ -297,7 +297,7 @@ void Automaton_Interface::on_testWordButton_clicked()
 			currentIndex = 0;
 			std::stack<char> currentStack;
 			std::vector<uint32_t> currentStatesVector(currentStates.begin(), currentStates.end());
-			bool verify = automatonPD.checkWord(currentStatesVector, currentStack, word, currentIndex);
+			bool verify = automatonPD.checkWord(automaton->getq0(), currentStack, word); //changes here
 			if (verify)
 				QMessageBox::information(this, "Testare", "Cuvantul " + label + " este acceptat");
 			else
@@ -376,15 +376,14 @@ void Automaton_Interface::on_verifyWordsButton_clicked()
 		std::ofstream outputFile("WordsVerifyed.txt");
 		std::string word;
 		std::vector<Arch*>& arches = graf.getArches();
-		for (int i = 0; i < arches.size(); i++)
-			currentStates.insert(i);
-		//currentStates = { automaton->getq0() };
-		currentIndex = 0;
+		/*for (int i = 0; i < arches.size(); i++)
+			currentStates.insert(i);*/
+		currentStates = { automaton->getq0() };
 		std::stack<char> currentStack;
 		std::vector<uint32_t> currentStatesVector(currentStates.begin(), currentStates.end());
 		while (inputFile >> word)
 		{
-			bool verify = automatonPD.checkWord(currentStatesVector,currentStack,word,currentIndex);
+			bool verify = automatonPD.checkWord(automaton->getq0(),currentStack,word); //check if works
 			if (verify)
 				outputFile << word << '-' << "este acceptat" << '\n';
 			else

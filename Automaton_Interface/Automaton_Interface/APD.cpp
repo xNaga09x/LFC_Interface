@@ -1,4 +1,5 @@
 #include "APD.h"
+#include <algorithm>
 
 APD::APD()
 	:m_sizeQ(0)
@@ -246,46 +247,57 @@ void APD::addInitialState(int state)
 	m_q0 = state;
 }
 
-bool APD::checkWord(const std::vector<uint32_t> currentStates, const std::stack<char> currentStack, const std::string& word, const uint32_t& currentIndex)
-{
-	if (currentIndex == word.size()
-		&& currentStack.size() == 1
-		&& currentStack.top() == m_Z0)
-		return true;
-	else if (currentStack.size() == 1 && currentStack.top() != m_Z0) return false;
-	else if (currentStack.size() < 1) return false;
-	std::vector<uint32_t> nextState;
-	std::stack<char> nextStack = currentStack;
-	bool transitionFound = false;
-	for (int currentState : currentStates)
-	{
-		for (auto transition : m_Delta)
-		{
-			if (transition.getInitialState() == currentState &&
-				transition.getAlphabet() == word[currentIndex] &&
-				transition.getTopStack() == currentStack.top())
-			{
-				transitionFound = true;
-				//pasi intermediari
-				nextState.emplace_back(transition.getFinalState());
-				if (!nextStack.empty())
-					nextStack.pop();
-				std::string finalStack = transition.getOverStack();
-				if (finalStack[0] == '~')
-					continue;
-				//era facuta original cu string, nu cu vector de char
-				std::reverse(finalStack.begin(), finalStack.end());
-				for (auto symbol : finalStack)
-				{
-					nextStack.push(symbol);
-				}
-			}
-		}
-	}
-	if (!transitionFound)
+bool APD::checkWord(uint32_t currentState, std::stack<char>& stack, std::string word) {
+	if (word.empty() && !stack.empty()) {
 		return false;
-	return checkWord(nextState, nextStack, word, currentIndex + 1);
-	//s ar putea sa crape la verificarea ultimei productii care verifica daca stiva e goala
+	}
+	if (!word.empty() && stack.empty()) {
+		return false;
+	}
+	if (word.empty() && stack.empty()) {
+		return true;
+	}
+
+	int index = 0;
+	char symbolToCheck = word[index];
+	std::tuple<int, char, char> prodToFind = std::make_tuple(currentState, symbolToCheck, stack.top());
+	std::vector<std::pair<int, std::string>> applicableProds = findProdResult(prodToFind);
+
+	bool aux = std::ranges::any_of(applicableProds, [&](const auto& transitionFunction)
+		{
+			std::stack<char> copy = stack;
+			currentState = transitionFunction.first;
+			copy.pop();
+			for (const auto& stackSymbol : transitionFunction.second)
+			{
+				if (stackSymbol == '~')
+				{
+					continue;
+				}
+				copy.push(stackSymbol);
+			}
+			if (std::string nextWord = word.substr(index + 1);
+				checkWord(currentState, copy, nextWord))
+			{
+				return true;
+			}
+			return false;
+		});
+
+	return aux;
+}
+
+std::vector<std::pair<int, std::string>> APD::findProdResult(std::tuple<int, char, char> prodInput)
+{
+	std::vector<std::pair<int, std::string>> result;
+	for (auto& prod : m_Delta)
+	{
+		if (prod.getInitialState() == std::get<0>(prodInput) &&
+			prod.getAlphabet() == std::get<1>(prodInput) &&
+			prod.getTopStack() == std::get<2>(prodInput))
+			result.emplace_back(std::make_pair(prod.getFinalState(), prod.getOverStack()));
+	}
+	return result;
 }
 
 bool APD::verifyAutomaton()
