@@ -7,8 +7,8 @@ class Arch
 {
     Node* firstNode;
     Node* secondNode;
-    QString label;//adaugarea unui membru pentru eticheta(informatai de pe arc)
-    QStringList elements;//adaugarea unui liste de elmente pe arc
+    QString label;
+    QStringList elements;
 public:
     Arch();
     Arch(Node* first, Node* second)
@@ -23,11 +23,11 @@ public:
 
     Node* getFirstNode()const { return firstNode; }
     Node* getSecondNode()const { return secondNode; }
-    QString getLabel() const;//Metoda pentru a obtine eticheta
-    void setLabel(const QString& newLabel);//Metoda pentru a seta eticheta
-    const QStringList& getElements() const;//Metoda pentru a obtine o lista de elemente
-    void addElement(const QString& element);//Metoda pentru a adauga un element
+    QString getLabel() const;
+    void setLabel(const QString& newLabel);
+    const QStringList& getElements() const;
+    void addElement(const QString& element);
     QColor color;
 };
 
-#endif // ARCH_H
+#endif 

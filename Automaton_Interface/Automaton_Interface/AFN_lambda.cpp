@@ -116,24 +116,24 @@ std::vector<int> AFN_lambda::getF() const
 
 bool AFN_lambda::verifyAutomaton()
 {
-	//Verific ca m_sizeQ si m_Sum sa fie nevide
+
 	if (m_sizeQ == 0 || m_sizeSum == 0 || m_sizeDelta == 0 || m_sizeF == 0)
 	{
 		return false;
 	}
-	//Verific daca m_q0 se afla in m_Q
+
 	auto it = std::find(m_Q.begin(), m_Q.end(), m_q0);
 	if (it == m_Q.end())
 	{
 		return false;
 	}
-	//Verifica daca elementele din m_F apartin lui m_Q
+
 	for (int i = 0; i < m_F.size(); i++)
 		if (std::find(m_Q.begin(), m_Q.end(), m_F[i]) == m_Q.end())
 		{
 			return false;
 		}
-	//Verifica daca elem lui m_Delta apartin lui m_Q,m_Sum,m_Q
+
 	for (int i = 0; i < m_sizeDelta; i++)
 		if (std::find(m_Q.begin(), m_Q.end(), std::get<0>(m_Delta[i])) == m_Q.end()
 			|| (std::get<1>(m_Delta[i]) != '~' && std::find(m_Sum.begin(), m_Sum.end(), std::get<1>(m_Delta[i])) == m_Sum.end())
@@ -232,8 +232,7 @@ std::unordered_set<int> AFN_lambda::lambdaClosure(int state) const
 		addStates = false;
 		for (auto transition : m_Delta)
 		{
-			//verifica daca litera este ~
-			//apoi verifica daca starea curenta este deja in lambda inchidere si starea urmatoare nu este deja in lambda inchidere
+
 			if (std::get<1>(transition) == '~' && closure.find(std::get<0>(transition)) != closure.end() && closure.find(std::get<2>(transition)) == closure.end())
 			{
 				closure.insert(std::get<2>(transition));
@@ -243,20 +242,20 @@ std::unordered_set<int> AFN_lambda::lambdaClosure(int state) const
 		}
 	}
 	return closure;
-	//return std::unordered_set<int>();
+
 }
 
 bool AFN_lambda::checkWordLambda(const std::string& word)
 {
-	//calcularea lambda-inchidere a starii initiale
+
 	std::unordered_set<int> currentStates = lambdaClosure(m_q0);
-	//parcurgerea cuvantului
+
 	for (char letter : word)
 	{
-		//crearea urmatoarei parcurgeri
+
 		std::unordered_set<int > nextStates;
 
-		//determinarea starilor urmatoarea pentru simbol curent
+
 		for (int currentState : currentStates)
 		{
 			for (auto transition : m_Delta)
@@ -266,10 +265,10 @@ bool AFN_lambda::checkWordLambda(const std::string& word)
 					nextStates.insert(nextState.begin(), nextState.end());
 				}
 		}
-		//actualizraea starii curente cu starea urmatoare
+
 		currentStates = nextStates;
 	}
-	//verifica daca starea curenta are cel putin o stare finala
+
 	for (int state : currentStates)
 	{
 		if (std::find(m_F.begin(), m_F.end(), state) != m_F.end())
@@ -287,7 +286,7 @@ void AFN_lambda::readAutomaton(std::ifstream& file)
 	std::vector<int> int_vector;
 	std::vector<char> char_vector;
 	std::vector<std::tuple<int, char, int>> Delta_vector;
-	//citire dimensiune si elemente Q
+
 	file >> value;
 	m_sizeQ = value;
 	for (int i = 0; i < m_sizeQ; i++)
@@ -297,7 +296,7 @@ void AFN_lambda::readAutomaton(std::ifstream& file)
 	}
 	m_Q = int_vector;
 	int_vector.clear();
-	//citire dimensiune si elemente Sum
+
 	file >> value;
 	m_sizeSum = value;
 	for (int i = 0; i < m_sizeSum; i++)
@@ -307,7 +306,7 @@ void AFN_lambda::readAutomaton(std::ifstream& file)
 	}
 	m_Sum = char_vector;
 	char_vector.clear();
-	//citire dimensiune si elemente Delta
+
 	file >> value;
 	m_sizeDelta = value;
 	for (int i = 0; i < m_sizeDelta; i++)
@@ -317,10 +316,10 @@ void AFN_lambda::readAutomaton(std::ifstream& file)
 	}
 	m_Delta = Delta_vector;
 	Delta_vector.clear();
-	//citire stare initiala q0
+
 	file >> value;
 	m_q0 = value;
-	//citire dimensiune si elemente F
+
 	file >> value;
 	m_sizeF = value;
 	for (int i = 0; i < m_sizeQ; i++)

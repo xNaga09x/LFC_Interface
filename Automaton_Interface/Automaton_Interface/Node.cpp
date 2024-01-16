@@ -1,8 +1,7 @@
 #include "Node.h"
 #include <cmath>
 #include <QPoint>
-//setarea default a nodului
-//constructorul de initializare
+
 Node::Node()
 {
     value = 0;
@@ -23,7 +22,7 @@ int Node::getValue()
 {
     return value;
 }
-//setter-ul pt coordonate,pt un punct x si y
+
 void Node::setCoordinate(QPoint p)
 {
     coordinate = p;
@@ -37,14 +36,14 @@ int Node::getY()
 {
     return coordinate.y();
 }
-//Pt punctul 2
+
 bool Node::isOverlapping(const Node& other) const
 {
     int dx = coordinate.x() - other.coordinate.x();
     int dy = coordinate.y() - other.coordinate.y();
-    int distance = std::sqrt(dx * dx + dy * dy); // Calcularea distantei euclidiana
+    int distance = std::sqrt(dx * dx + dy * dy);
 
-    int radiusSum = 20; // Suma razelor nodurilor (in acest exemplu, 20 de unitati)
+    int radiusSum = 20;
 
     return distance <= radiusSum;
 }

@@ -1,5 +1,5 @@
 ﻿#include "Automaton_Interface.h"
-#include "qdebug.h" //for testing to be removed
+#include "qdebug.h" 
 
 Automaton_Interface::Automaton_Interface(QWidget* parent)
 	: QMainWindow(parent)
@@ -43,11 +43,11 @@ void Automaton_Interface::on_dragButton_clicked()
 
 void Automaton_Interface::on_addFromFileButton_clicked()
 {
-	//Deschide file explorer-ul cu QFileDialog si pune absolute path-ul file-ului ales intr-un QString
+
 	QString fileName = QFileDialog::getOpenFileName(this, tr("Open Automaton"), "C:/", tr("Image Files(*.txt *.in)"));
-	//Transforma QString to std::string
+
 	std::string stringFileName = fileName.toStdString();
-	//Deschide fisierul ales si citeste din el
+
 	std::ifstream file(stringFileName);
 	std::string type;
 	file >> type;
@@ -76,7 +76,7 @@ void Automaton_Interface::on_addFromFileButton_clicked()
 	}
 	else exit(1);
 
-	//apelare functie in maindow de desenare a automatului respectiv
+
 	uint32_t x, y;
 	std::random_device rd;
 	std::mt19937 gen(rd());
@@ -86,7 +86,7 @@ void Automaton_Interface::on_addFromFileButton_clicked()
 	std::unordered_set<int> coordsUsed_y;
 	if (automatonType != AutomatonType::APDType)
 	{
-		//noduri parcurgand vectorul de stari
+
 		for (uint32_t i = 0; i < toDrawAutomaton->getQ().size(); i++)
 		{
 			do
@@ -109,7 +109,7 @@ void Automaton_Interface::on_addFromFileButton_clicked()
 			if (std::find(finalNodes.begin(), finalNodes.end(), nodes[i]->getValue()) != finalNodes.end())
 				nodes[i]->setFinalState(true);
 		}
-		//arce parcurgand vectorul de tranzitii
+
 		std::vector<std::tuple<int, char, int>> transitions = toDrawAutomaton->getDelta();
 		for (uint32_t i = 0; i < transitions.size(); i++)
 		{
@@ -119,8 +119,8 @@ void Automaton_Interface::on_addFromFileButton_clicked()
 			uint32_t secondNode = std::get<2>(transitions[i]);
 			Node* first = graf.getNodeById(firstNode);
 			Node* second = graf.getNodeById(secondNode);
-			graf.addArch(first, second, label);	//nu prea se vad bine arcele de la un nod la el insusi check
-			//nu se marcheza nodurile finale visual
+			graf.addArch(first, second, label);
+
 		}
 	}
 	else
@@ -147,7 +147,7 @@ void Automaton_Interface::on_addFromFileButton_clicked()
 			if (std::find(finalNodes.begin(), finalNodes.end(), nodes[i]->getValue()) != finalNodes.end())
 				nodes[i]->setFinalState(true);
 		}
-		//arce parcurgand vectorul de tranzitii
+
 		std::vector<Prod> transitions = toDrawAPD.getDelta();
 		for (uint32_t i = 0; i < transitions.size(); i++)
 		{
@@ -166,9 +166,7 @@ void Automaton_Interface::on_addFromFileButton_clicked()
 			Node* first = graf.getNodeById(firstNode);
 			Node* second = graf.getNodeById(secondNode);
 			graf.addAPDArch(first, second, labels);
-			//vizual probleme: se suprapun tranzitiile care pornesc si ajung in acelasi nod
-			//(la apd sunt destul de comune)
-			//nici aici nu sunt marcate nodurile finale
+
 		}
 	}
 	update();
@@ -177,9 +175,9 @@ void Automaton_Interface::on_addFromFileButton_clicked()
 
 void Automaton_Interface::on_saveToFileButton_clicked()
 {
-	//Deschide file explorer-ul cu QFileDialog si pune absolute path-ul file-ului ales intr-un QString
+
 	QString fileName = QFileDialog::getOpenFileName(this, tr("Choose save file"), "C:/", tr("Image Files(*.txt *.in)"));
-	//Transforma QString to std::string
+
 	std::string stringFileName = fileName.toStdString();
 	std::ofstream file(stringFileName);
 	if (automatonType != AutomatonType::APDType)
@@ -196,21 +194,21 @@ void Automaton_Interface::highlightNode(Node* node, QColor color)
 
 void Automaton_Interface::highlightArc(Arch* arc, QColor color)
 {
-	// Implementați schimbarea culorii pentru arcul dat
+
 	arc->color = color;
-	update();  // Asigurați-vă că actualizați interfața grafică
+	update();
 }
 
 void Automaton_Interface::resetColors()
 {
-	// Implementați revenirea la culorile inițiale pentru toate nodurile și arcele automatului
+
 	for (Node* node : graf.getNodes())
-		node->color = Qt::black;  // Sau culoarea inițială a nodurilor
+		node->color = Qt::black;
 
 	for (Arch* arc : graf.getArches())
-		arc->color = Qt::black;  // Sau culoarea inițială a arcelor
+		arc->color = Qt::black;
 
-	update();  // Asigurați-vă că actualizați interfața grafică
+	update();
 }
 
 void Automaton_Interface::on_testWordButton_clicked()
@@ -219,10 +217,10 @@ void Automaton_Interface::on_testWordButton_clicked()
 	if (!label.isEmpty())
 	{
 		
-		// Verificați tipul automatului
+
 		if (automatonType == AutomatonType::AFDType)
 		{
-			// Automat de tip AFD
+
 			std::vector<Arch*>& arches = graf.getArches();
 			for (int i = 0; i < arches.size(); i++)
 				currentStates.insert(i);
@@ -255,7 +253,7 @@ void Automaton_Interface::on_testWordButton_clicked()
 		}
 		else if (automatonType == AutomatonType::AFNType)
 		{
-			// Automat de tip AFN
+
 			std::vector<Arch*>& arches = graf.getArches();
 			label = openWordBox();
 			for (int i = 0; i < arches.size(); i++)
@@ -271,7 +269,7 @@ void Automaton_Interface::on_testWordButton_clicked()
 		}
 		else if (automatonType == AutomatonType::AFNLType)
 		{
-			// Automat de tip AFN_lambda
+
 			label = openWordBox();
 			std::string word = label.toStdString();
 			bool verify = automaton->checkWordLambda(word);
@@ -282,7 +280,7 @@ void Automaton_Interface::on_testWordButton_clicked()
 		}
 		else if (automatonType == AutomatonType::APDType)
 		{
-			// Automat de tip APD
+
 			label = openWordBox();
 			std::string word = label.toStdString();
 			std::vector<Arch*>& arches = graf.getArches();
@@ -368,14 +366,13 @@ void Automaton_Interface::on_verifyWordsButton_clicked()
 		std::ofstream outputFile("WordsVerifyed.txt");
 		std::string word;
 		std::vector<Arch*>& arches = graf.getArches();
-		/*for (int i = 0; i < arches.size(); i++)
-			currentStates.insert(i);*/
+
 		currentStates = { automaton->getq0() };
 		std::stack<char> currentStack;
 		std::vector<uint32_t> currentStatesVector(currentStates.begin(), currentStates.end());
 		while (inputFile >> word)
 		{
-			bool verify = automatonPD.checkWord(automaton->getq0(),currentStack,word); //check if works
+			bool verify = automatonPD.checkWord(automaton->getq0(),currentStack,word);
 			if (verify)
 				outputFile << word << '-' << "este acceptat" << '\n';
 			else
@@ -392,7 +389,7 @@ void Automaton_Interface::showAutomatonTypeDialog()
 
 	if (dialog.exec() == QDialog::Accepted) {
 		automatonType = dialog.getSelectedAutomatonType();
-		//delete automaton;
+
 		switch (automatonType)
 		{
 		case AutomatonType::AFDType:
@@ -405,7 +402,7 @@ void Automaton_Interface::showAutomatonTypeDialog()
 			automaton = new AFN_lambda;
 			break;
 		case AutomatonType::APDType:
-			//se va folosi variabila automatonPD pentru bg obj
+
 			break;
 		}
 	}
@@ -416,13 +413,13 @@ void Automaton_Interface::mouseReleaseEvent(QMouseEvent* e)
 
 	if (e->button() == Qt::RightButton)
 	{
-		// Verificati suprapunerea cu nodurile existente
+
 		bool overlapping = false;
 		for (Node* n : graf.getNodes())
 		{
 			Node tempNode;
-			tempNode.setCoordinate(e->pos()); // Initializare coordonate
-			tempNode.setValue(10); // Initializare raza (in acest exemplu, 10 de unitati)
+			tempNode.setCoordinate(e->pos()); 
+			tempNode.setValue(10); 
 
 			if (n->isOverlapping(tempNode))
 			{
@@ -433,7 +430,7 @@ void Automaton_Interface::mouseReleaseEvent(QMouseEvent* e)
 
 		if (!overlapping)
 		{
-			//adauga starile in obiect
+
 			int stateValue = graf.getNodes().size();
 			if (automatonType == AutomatonType::APDType)
 			{
@@ -457,7 +454,7 @@ void Automaton_Interface::mouseReleaseEvent(QMouseEvent* e)
 	}
 	else if (e->button() == Qt::LeftButton)
 	{
-		//sa verific daca exista nod
+
 		Prod p;
 		std::vector<Node*> nodes = graf.getNodes();
 		for (Node* n : nodes)
@@ -470,7 +467,7 @@ void Automaton_Interface::mouseReleaseEvent(QMouseEvent* e)
 				}
 				else
 				{
-					//adaugare arce in functie de tipul de automat
+
 					if (automatonType == AutomatonType::APDType)
 					{
 						QString label;
@@ -500,16 +497,16 @@ void Automaton_Interface::mouseReleaseEvent(QMouseEvent* e)
 						if (!graf.arcExists(firstNode, n))
 						{
 							graf.addAPDArch(firstNode, n, labels);
-							//adaug tranzitia corespunzatoare in obiectul APD
+
 							p.setInitialState(firstNode->getValue());
 							p.setFinalState(n->getValue());
 							automatonPD.addTransition(p);
 						}
 						else
 						{
-							// Adaugare arc care se intoarce la acelasi nod
+
 							graf.addAPDArch(n, firstNode, labels);
-							//adaug tranzitia corespunzatoare in obiectul APD
+
 							p.setInitialState(n->getValue());
 							p.setFinalState(firstNode->getValue());
 							automatonPD.addTransition(p);
@@ -520,17 +517,17 @@ void Automaton_Interface::mouseReleaseEvent(QMouseEvent* e)
 					{
 						QString label;
 						label = openTextBox();
-						// Aici se face verificarea pentru existenta unui arc cu acelasi sens intre aceleasi doua noduri
+
 						if (!graf.arcExists(firstNode, n))
 						{
 							graf.addArch(firstNode, n, label);
-							//adaug tranzitia corespunzatoare in obiect
+
 							automaton->addSymbolToAlphabet(label.toStdString()[0]);
 							automaton->addTransition(firstNode->getValue(), label.toStdString()[0], n->getValue());
 						}
 						else
 						{
-							// Adaugare arc care se intoarce la acelasi nod
+
 							graf.addArch(n, firstNode, label);
 							automaton->addTransition(n->getValue(), label.toStdString()[0], firstNode->getValue());
 						}
@@ -544,25 +541,25 @@ void Automaton_Interface::mouseReleaseEvent(QMouseEvent* e)
 	}
 }
 
-void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
+void Automaton_Interface::paintEvent(QPaintEvent* e)
 {
 	QPainter p(this);
 	std::vector<Node*>& noduri = graf.getNodes();
 	for (Node* n : noduri)
 	{
-		QRect outerRect(n->getX() - 15, n->getY() - 15, 30, 30); // Dimensiunile cercului exterior
-		QRect r(n->getX() - 10, n->getY() - 10, 20, 20);//xr=xnode-10 yr=yn-10 si dim dreptunghiului
+		QRect outerRect(n->getX() - 15, n->getY() - 15, 30, 30);
+		QRect r(n->getX() - 10, n->getY() - 10, 20, 20);
 
 		if (n->getFinalState())
 		{
-			QPen outerPen(Qt::black); // Culoarea și grosimea conturului cercului exterior
+			QPen outerPen(Qt::black); 
 			outerPen.setWidth(2);
 			p.setPen(outerPen);
 			p.drawEllipse(outerRect);
 		}
 		if (n->getInitialState())
 		{
-			//Desenarea sagetii pentru nodul initial
+
 			QPen initialPen(Qt::black);
 			initialPen.setWidth(2);
 			p.setPen(initialPen);
@@ -582,7 +579,7 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 			p.drawLine(aux2, arrowP2);
 		}
 
-		QPen innerPen(Qt::black); // Culoarea și grosimea conturului cercului interior
+		QPen innerPen(Qt::black);
 		innerPen.setWidth(2);
 		p.setPen(innerPen);
 		p.drawEllipse(r);
@@ -591,18 +588,18 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 		p.drawText(r, Qt::AlignCenter, s);
 		if (nodeAnimation && std::find(nodeAnimations.begin(), nodeAnimations.end(), n) != nodeAnimations.end())
 		{
-			QRect outerRect(n->getX() - 15, n->getY() - 15, 30, 30); // Dimensiunile cercului exterior
-			QRect r(n->getX() - 10, n->getY() - 10, 20, 20);//xr=xnode-10 yr=yn-10 si dim dreptunghiului
+			QRect outerRect(n->getX() - 15, n->getY() - 15, 30, 30);
+			QRect r(n->getX() - 10, n->getY() - 10, 20, 20);
 			if (n->getFinalState())
 			{
-				QPen outerPen(Qt::blue); // Culoarea și grosimea conturului cercului exterior
+				QPen outerPen(Qt::blue);
 				outerPen.setWidth(2);
 				p.setPen(outerPen);
 				p.drawEllipse(outerRect);
 			}
 			if (n->getInitialState())
 			{
-				//Desenarea sagetii pentru nodul initial
+
 				QPen initialPen(Qt::blue);
 				initialPen.setWidth(2);
 				p.setPen(initialPen);
@@ -622,7 +619,7 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 				p.drawLine(aux2, arrowP2);
 			}
 
-			QPen innerPen(Qt::blue); // Culoarea și grosimea conturului cercului interior
+			QPen innerPen(Qt::blue);
 			innerPen.setWidth(2);
 			p.setPen(innerPen);
 			p.drawEllipse(r);
@@ -634,15 +631,15 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 	std::vector<Arch*>& arches = graf.getArches();
 	std::vector<APDArch*>& apd_arches = graf.getAPDArches();
 	if (automatonType != AutomatonType::APDType)
-		//Cazul in care avem automat !=APD
+
 	{
-		for (Arch* a : arches)//desenam linie intre coordonatele primului si al doilea nod
-		{	//Cazul in care avem arc de la un nod la el insusi
+		for (Arch* a : arches)
+		{
 			if (a->getFirstNode()->getValue() == a->getSecondNode()->getValue())
 			{
 				Node* n = a->getFirstNode();
 
-				//Setare dimensiuni linii
+
 				double firstLineLength = 30.0;
 				p.drawLine(QPointF(n->getX(), n->getY() - 10),
 					QPointF(n->getX(), n->getY() - firstLineLength));
@@ -662,9 +659,8 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 				QPointF lineStart = QPointF(n->getX() - secondLineLength, n->getY());
 				QPointF lineEnd = QPointF(n->getX() - 10, n->getY());
 
-				// Desenează săgeata la capătul liniei
-				double arrowSize = 10.0; // Ajustează dimensiunea săgeții
-				double arrowAngle = M_PI / 6.0; // Ajustează unghiul săgeții
+				double arrowSize = 10.0; 
+				double arrowAngle = M_PI / 6.0; 
 
 				QPointF arrowP1 = QPointF(lineEnd.x() - arrowSize * cos(arrowAngle),
 					lineEnd.y() - arrowSize * sin(arrowAngle));
@@ -673,31 +669,31 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 				p.drawLine(lineEnd, arrowP1);
 				p.drawLine(lineEnd, arrowP2);
 
-				//Desenare label
+
 				QPointF middle = (l1 + l2) / 2.0;
 				QStringList elements = a->getElements();
 				int elementY = middle.y() - 5;
 				int index = std::distance(arches.begin(), std::find(arches.begin(), arches.end(), a));
-				QRect elementRect(middle.x() - 40, elementY - 30, 40, 40);//crearea patratului coordonatele de pe stanga si dreapta,latimea si inaltimea dreptunghiului
-				p.drawText(elementRect, Qt::AlignCenter, a->getLabel());//element);
-				elementY += 15;//Spatiile intre elemente
+				QRect elementRect(middle.x() - 40, elementY - 30, 40, 40);
+				p.drawText(elementRect, Qt::AlignCenter, a->getLabel());
+				elementY += 15;
 			}
-			//Cazul in care avem arc intre 2 noduri diferite
+
 			else
 			{
-				//verifica daca am arc de la nod la celalalt si invers
+
 				bool existForward = graf.arcExists(a->getFirstNode(), a->getSecondNode());
 				bool existBackward = graf.arcExists(a->getSecondNode(), a->getFirstNode());
-				//verifica arcul daca este de la primul la al doilea sau nu
+
 				bool isForward = a->getFirstNode()->getX() < a->getSecondNode()->getX();
 				bool isBackward = a->getFirstNode()->getX() > a->getSecondNode()->getX();
-				//verifica daca exista arcul de la un nod la altul si invers 
+
 				if (existForward && existBackward)
 				{
-					//face arcul de la primul nod la al doilea
+
 					if (isForward)
 					{
-						// Calculeaza pozitiile de start si sfarsit pentru arcul in directia initiala
+
 						double separation = 7.0;
 						double angle = atan2(a->getSecondNode()->getY() - a->getFirstNode()->getY(),
 							a->getSecondNode()->getX() - a->getFirstNode()->getX());
@@ -708,7 +704,7 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 						QPointF endForward = QPointF(a->getSecondNode()->getX() - cos(angle) * (arrowSize),
 							a->getSecondNode()->getY() - sin(angle) * (arrowSize)-separation);
 
-						// Deseneaza arcul în directia initiala
+
 						p.drawLine(startForward, endForward);
 						QPointF arrowP1Forward = QPointF(endForward.x() - arrowSize * cos(angle - M_PI / 6),
 							endForward.y() - arrowSize * sin(angle - M_PI / 6));
@@ -716,13 +712,12 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 							endForward.y() - arrowSize * sin(angle + M_PI / 6));
 						p.drawLine(endForward, arrowP1Forward);
 						p.drawLine(endForward, arrowP2Forward);
-						// Calcularea mijlocului arcului
+
 						QPointF middleForward = (a->getFirstNode()->getCoordinate() + a->getSecondNode()->getCoordinate()) / 2.0;
 
-						// Desenarea elementelor in mijlocul arcului
+
 						QStringList elementsForward = a->getElements();
 
-						// Ajusteaza inaltimea pentru a fi pozitionat mai aproape de arc
 						int elementYForward = middleForward.y() - 7;
 
 						QRect elementRectForward(middleForward.x() - 5, elementYForward, 10, 10);
@@ -730,10 +725,10 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 						elementYForward += 15;
 					}
 					else
-						//face arcul de la al doilea nod la primul
+
 						if (isBackward)
 						{
-							// Calculeaza pozitiile de start si sfarsit pentru arcul in directia inversa
+
 							double separationBackward = 6.0;
 							double angleBackward = atan2(a->getSecondNode()->getY() - a->getFirstNode()->getY(),
 								a->getSecondNode()->getX() - a->getFirstNode()->getX());
@@ -743,7 +738,7 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 							QPointF endBackward = QPointF(a->getSecondNode()->getX() - cos(angleBackward) * (arrowSize),
 								a->getSecondNode()->getY() - sin(angleBackward) * (arrowSize)+separationBackward);
 
-							// Deseneaza arcul in directia inversa
+
 							p.drawLine(startBackward, endBackward);
 							QPointF arrowP1Backward = QPointF(endBackward.x() - arrowSize * cos(angleBackward - M_PI / 6),
 								endBackward.y() - arrowSize * sin(angleBackward - M_PI / 6));
@@ -751,10 +746,10 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 								endBackward.y() - arrowSize * sin(angleBackward + M_PI / 6));
 							p.drawLine(endBackward, arrowP1Backward);
 							p.drawLine(endBackward, arrowP2Backward);
-							// Calcularea mijlocului arcului
+
 							QPointF middleBackward = (a->getFirstNode()->getCoordinate() + a->getSecondNode()->getCoordinate()) / 2.0;
 
-							// Desenarea elementelor in mijlocul arcului
+
 							QStringList elementsBackward = a->getElements();
 							int elementYBackward = middleBackward.y() - 5;
 
@@ -765,10 +760,10 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 				}
 				else
 				{
-					//Cazul in care avem arc intre 2 noduri diferite
+
 					double angle = atan2(a->getSecondNode()->getY() - a->getFirstNode()->getY(),
 						a->getSecondNode()->getX() - a->getFirstNode()->getX());
-					double arrowSize = 10.0; // Ajustarea dimensiunii sagetii dupa preferinta
+					double arrowSize = 10.0;
 
 					QPointF start = QPointF(a->getFirstNode()->getX() + cos(angle) * (arrowSize),
 						a->getFirstNode()->getY() + sin(angle) * (arrowSize));
@@ -777,31 +772,31 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 
 					p.drawLine(start, end);
 
-					// Calcularea punctelor pentru capul sagetii
+
 					QPointF arrowP1 = QPointF(end.x() - arrowSize * cos(angle - M_PI / 6),
 						end.y() - arrowSize * sin(angle - M_PI / 6));
 					QPointF arrowP2 = QPointF(end.x() - arrowSize * cos(angle + M_PI / 6),
 						end.y() - arrowSize * sin(angle + M_PI / 6));
 
-					// Desenarea capului sagetii
+
 					p.drawLine(end, arrowP1);
 					p.drawLine(end, arrowP2);
 
-					//Calcularea mijlocului arcului
+
 					QPointF middle = (a->getFirstNode()->getCoordinate() + a->getSecondNode()->getCoordinate()) / 2.0;
-					//Desenarea elementelor in mijlocul arcului
+
 					QStringList elements = a->getElements();
 					int elementY = middle.y() - 5;
 
-					QRect elementRect(middle.x() - 5, elementY + 15, 10, 10);//crearea patratului coordonatele de pe stanga si dreapta,latimea si inaltimea dreptunghiului
-					p.drawText(elementRect, Qt::AlignCenter, a->getLabel());//element);
-					elementY += 15;//Spatiile intre elemente
+					QRect elementRect(middle.x() - 5, elementY + 15, 10, 10);
+					p.drawText(elementRect, Qt::AlignCenter, a->getLabel());
+					elementY += 15;
 				}
 				if (firstNode)
 				{
 					QRect r(firstNode->getX() - 10, firstNode->getY() - 10, 20, 20);
 					QPen pen;
-					//pen.setColor(Qt::red);
+
 					pen.setWidth(2);
 					p.setPen(pen);
 					p.drawEllipse(r);
@@ -825,7 +820,7 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 			{
 				Node* n = a->getFirstNode();
 
-				//Setare dimensiuni linii
+
 				double firstLineLength = 30.0;
 				p.drawLine(QPointF(n->getX(), n->getY() - 10),
 					QPointF(n->getX(), n->getY() - firstLineLength));
@@ -845,9 +840,9 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 				QPointF lineStart = QPointF(n->getX() - secondLineLength, n->getY());
 				QPointF lineEnd = QPointF(n->getX() - 10, n->getY());
 
-				// Desenează săgeata la capătul liniei
-				double arrowSize = 10.0; // Ajustează dimensiunea săgeții
-				double arrowAngle = M_PI / 6.0; // Ajustează unghiul săgeții
+
+				double arrowSize = 10.0; 
+				double arrowAngle = M_PI / 6.0; 
 
 				QPointF arrowP1 = QPointF(lineEnd.x() - arrowSize * cos(arrowAngle),
 					lineEnd.y() - arrowSize * sin(arrowAngle));
@@ -856,23 +851,23 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 				p.drawLine(lineEnd, arrowP1);
 				p.drawLine(lineEnd, arrowP2);
 
-				//Desenare label
+
 				QPointF middle = (l1 + l2) / 2.0;
 				int elementY = middle.y() - 5;
 				a->setNoLabels(a->getLabels().size());
 				for (int i = 0; i < a->getNoLabels(); i++)
 				{
 					QRect elementRect(middle.x() - 30, elementY + 10, 10, 10);
-					p.drawText(elementRect, Qt::AlignCenter, a->getLabels()[i]);//element);
-					elementY -= 15;//Spatiile intre elemente
+					p.drawText(elementRect, Qt::AlignCenter, a->getLabels()[i]);
+					elementY -= 15;
 				}
 			}
-		//Cazul in care avem arc intre 2 noduri diferite
+
 			else
 			{
 				double angle = atan2(a->getSecondNode()->getY() - a->getFirstNode()->getY(),
 					a->getSecondNode()->getX() - a->getFirstNode()->getX());
-				double arrowSize = 10.0; // Ajustarea dimensiunii sagetii dupa preferinta
+				double arrowSize = 10.0;
 
 				QPointF start = QPointF(a->getFirstNode()->getX() + cos(angle) * (arrowSize),
 					a->getFirstNode()->getY() + sin(angle) * (arrowSize));
@@ -881,19 +876,17 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 
 				p.drawLine(start, end);
 
-				// Calcularea punctelor pentru capul sagetii
+
 				QPointF arrowP1 = QPointF(end.x() - arrowSize * cos(angle - M_PI / 6),
 					end.y() - arrowSize * sin(angle - M_PI / 6));
 				QPointF arrowP2 = QPointF(end.x() - arrowSize * cos(angle + M_PI / 6),
 					end.y() - arrowSize * sin(angle + M_PI / 6));
 
-				// Desenarea capului sagetii
 				p.drawLine(end, arrowP1);
 				p.drawLine(end, arrowP2);
 
-				//Calcularea mijlocului arcului
 				QPointF middle = (a->getFirstNode()->getCoordinate() + a->getSecondNode()->getCoordinate()) / 2.0;
-				//Desenarea elementelor in mijlocul arcului
+
 				QStringList elements = a->getElements();
 				int elementY = middle.y() - 5;
 
@@ -927,7 +920,7 @@ void Automaton_Interface::mousePressEvent(QMouseEvent* e) {
 
 		for (Node* n : nodes) {
 			if (abs(e->pos().x() - n->getX()) < 10 && abs(e->pos().y() - n->getY()) < 10) {
-				// Stergerea nodului si arcelor legate de el
+
 				graf.removeNode(n);
 				update();
 				break;
@@ -954,7 +947,7 @@ void Automaton_Interface::mousePressEvent(QMouseEvent* e) {
 
 				for (Node* n : nodes) {
 					if (abs(e->pos().x() - n->getX()) < 10 && abs(e->pos().y() - n->getY()) < 10) {
-						// Setarea nodului ca nod final
+
 						n->setFinalState(true);
 						if (automatonType != AutomatonType::APDType)
 							automaton->addFinalState(n->getValue());
@@ -970,7 +963,7 @@ void Automaton_Interface::mousePressEvent(QMouseEvent* e) {
 
 				for (Node* n : nodes) {
 					if (abs(e->pos().x() - n->getX()) < 10 && abs(e->pos().y() - n->getY()) < 10) {
-						// Setarea nodului ca nod mutat
+
 						draggedNode = n;
 						update();
 						break;
@@ -982,13 +975,13 @@ void Automaton_Interface::mousePressEvent(QMouseEvent* e) {
 
 void Automaton_Interface::mouseMoveEvent(QMouseEvent* e) {
 	if (dragMode) {
-		// Daca un nod este in miscare, actualizati pozitia acestuia
+
 		int dx = e->pos().x() - lastMousePos.x();
 		int dy = e->pos().y() - lastMousePos.y();
 
 		draggedNode->setCoordinate(draggedNode->getCoordinate() + QPoint(dx, dy));
 		lastMousePos = e->pos();
-		update();  // Redesenati fereastra pentru a reflecta noua pozitie
+		update();
 	}
 }
 

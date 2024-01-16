@@ -2,7 +2,7 @@
 
 AutomatonTypeDialog::~AutomatonTypeDialog()
 {
-    /* EMPTY */
+
 }
 
 AutomatonTypeDialog::AutomatonTypeDialog(QWidget* parent) : QDialog(parent)

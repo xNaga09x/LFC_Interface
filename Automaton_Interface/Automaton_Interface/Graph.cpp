@@ -47,7 +47,7 @@ void Graph::addNode(QPoint p)
 
     size_t numNodes = nodes.size();
 }
-//Pentru punctul 3
+
 bool Graph::isArcUnique(Node* source, Node* target)
 {
     for (Arch* arc : arches)
@@ -100,11 +100,11 @@ void Graph::addAPDArch(Node* firstNode, Node* secondNode, std::vector<QString>& 
 
 void Graph::removeNode(Node* node)
 {
-    // Stergerea nodului din vector
+
     auto it = std::remove(nodes.begin(), nodes.end(), node);
     nodes.erase(it, nodes.end());
 
-    // Stergerea arcelor conectate de nod
+
     std::vector<Arch*>::iterator it1;
     it1 = arches.begin();
     while (it1 != arches.end())

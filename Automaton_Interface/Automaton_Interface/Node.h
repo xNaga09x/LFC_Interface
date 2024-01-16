@@ -38,4 +38,4 @@ public:
     QColor color;
 };
 
-#endif // NODE_H
+#endif

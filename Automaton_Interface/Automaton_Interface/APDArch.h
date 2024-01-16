@@ -7,8 +7,8 @@ class APDArch
     Node* firstNode;
     Node* secondNode;
     int noLabels;
-    std::vector<QString> labels;//adaugarea unui membru pentru eticheta(informatai de pe arc)
-    QStringList elements;//adaugarea unui liste de elmente pe arc
+    std::vector<QString> labels;
+    QStringList elements;
 public:
     APDArch();
     APDArch(Node* first, Node* second)
@@ -23,12 +23,12 @@ public:
 
     Node* getFirstNode() { return firstNode; }
     Node* getSecondNode() { return secondNode; }
-    std::vector<QString> getLabels() const;//Metoda pentru a obtine eticheta
-    const QStringList& getElements() const;//Metoda pentru a obtine o lista de elemente
+    std::vector<QString> getLabels() const;
+    const QStringList& getElements() const;
     const int& getNoLabels() const;
-    void addElement(const QString& element);//Metoda pentru a adauga un element
+    void addElement(const QString& element);
 
-    void setLabels(const std::vector<QString>& newLabels);//Metoda pentru a seta eticheta
+    void setLabels(const std::vector<QString>& newLabels);
     int setNoLabels(const int& number);
 };
 

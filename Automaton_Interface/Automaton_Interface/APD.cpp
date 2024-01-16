@@ -304,33 +304,33 @@ bool APD::verifyAutomaton()
 {
 	if (std::find(m_Q.begin(), m_Q.end(), m_q0) == m_Q.end())
 	{
-		//std::cout << "1";
+
 		return false;
 	}
 
 	if (std::find(m_Gamma.begin(), m_Gamma.end(), m_Z0) == m_Gamma.end())
 	{
-		//std::cout << "2";
+
 		return false;
 	}
 
 	if (m_Q.size() == 0 || m_Sum.size() == 0 || m_Delta.size() == 0 || m_F.size() == 0)
 	{
-		//std::cout << "3";
+
 		return false;
 	}
 
 	auto it = std::find(m_Q.begin(), m_Q.end(), m_q0);
 	if (it == m_Q.end())
 	{
-		//std::cout << "4";
+
 		return false;
 	}
 
 	for (int i = 0; i < m_F.size(); i++)
 		if (std::find(m_Q.begin(), m_Q.end(), m_F[i]) == m_Q.end())
 		{
-			//std::cout << "5";
+
 			return false;
 		}
 
@@ -341,7 +341,7 @@ bool APD::verifyAutomaton()
 			|| std::find(m_Gamma.begin(), m_Gamma.end(), m_Delta[i].getAlphabet()) == m_Gamma.end())
 			&& m_Delta[i].getAlphabet() != '~')
 		{
-			//std::cout << "6";
+
 			return false;
 		}
 	for (int i = 0; i < m_Delta.size(); i++)
@@ -353,7 +353,7 @@ bool APD::verifyAutomaton()
 				continue;
 			if (std::find(m_Gamma.begin(), m_Gamma.end(), check[j]) == m_Gamma.end())
 			{
-				//std::cout << "7";
+
 				return false;
 			}
 		}
@@ -373,7 +373,7 @@ void APD::readAutomaton(std::ifstream& file)
 	std::vector<int> int_vector;
 	std::vector<char> char_vector;
 	std::vector<Prod> Delta_vector;
-	//citire dimensiune si elemente Q
+
 	file >> value;
 	m_sizeQ = value;
 	for (int i = 0; i < m_sizeQ; i++)
@@ -383,7 +383,7 @@ void APD::readAutomaton(std::ifstream& file)
 	}
 	m_Q = int_vector;
 	int_vector.clear();
-	//citire dimensiune si elemente Sum
+
 	file >> value;
 	m_sizeSum = value;
 	for (int i = 0; i < m_sizeSum; i++)
@@ -393,7 +393,7 @@ void APD::readAutomaton(std::ifstream& file)
 	}
 	m_Sum = char_vector;
 	char_vector.clear();
-	//citire dimensiune si elemente Gamma
+
 	file >> value;
 	m_sizeGamma = value;
 	for (int i = 0; i < m_sizeGamma; i++)
@@ -403,7 +403,7 @@ void APD::readAutomaton(std::ifstream& file)
 	}
 	m_Gamma = char_vector;
 	char_vector.clear();
-	//citire dimensiune si elemente Delta
+
 	file >> value;
 	m_sizeDelta = value;
 	Prod p;
@@ -420,13 +420,13 @@ void APD::readAutomaton(std::ifstream& file)
 	}
 	m_Delta = Delta_vector;
 	Delta_vector.clear();
-	//citire stare initiala q0
+
 	file >> value;
 	m_q0 = value;
-	//citire stare initiala Z0
+
 	file >> character;
 	m_Z0 = character;
-	//citire dimensiune si elemente F
+
 	file >> value;
 	m_sizeF = value;
 	for (int i = 0; i < m_sizeQ; i++)

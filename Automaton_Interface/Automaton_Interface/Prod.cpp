@@ -2,7 +2,7 @@
 
 Prod::Prod()
 {
-	/* EMPTY */
+
 }
 
 Prod::Prod(const int& overStackSize, const int& initState, const int& finalState, const char& alphabet, const char& topStack, const std::string& overStack)

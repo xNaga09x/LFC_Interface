@@ -3,7 +3,7 @@
 #include <iostream>
 #include <unordered_set>
 
-//Automaton Interface
+
 class Automaton
 {
 public:

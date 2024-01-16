@@ -11,7 +11,7 @@ public:
     QString getEnteredText();
     void onReturnPressed()
     {
-        accept(); // Închide dialogul doar la ap?sarea tastei Enter
+        accept();
     }
 private:
     QLineEdit* m_lineEdit;

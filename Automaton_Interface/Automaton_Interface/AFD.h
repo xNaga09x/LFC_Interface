@@ -51,13 +51,12 @@ public:
 	void addTransition(int firstState, char symbol, int secondState);
 	void addSymbolToAlphabet(char symbol);
 	void addFinalState(int state);
-	//trebuie pusa pentru a elimina conflictul dintre checkWord si checkWordLambda,fiind doua functii diferite
+
 	bool checkWordLambda(const std::string& word) override
 	{
 		return false;
 	}
-	//verificare utilizand BackTracking (currentStates reprezinta starile de cuvinte,deoarece pot exista mai multe
-	//stari intr-un moment,word e cuv dat,iar currentIndex e litera curenta din cuvant)
+
 	bool checkWord(const std::unordered_set<int>& currentStates, const std::string& word, int currentIndex);
 	std::pair<std::unordered_set<Node*>, std::unordered_set<Arch*>> checkWordDetails(const std::unordered_set<int>& 
 		currentStates, const std::string& word, int currentIndex);
@@ -73,10 +72,10 @@ private:
 	uint16_t m_sizeSum;
 	uint16_t m_sizeDelta;
 	uint16_t m_sizeF;
-	std::vector<int> m_Q;//se poate face si int sau string sau char(nu are treaba) - q0,q1,q2...
-	std::vector<char> m_Sum;//alfabetul - a,b
-	std::vector<std::tuple<int, char, int>> m_Delta;//functiile de tranzitie
-	uint16_t m_q0;//starea initiala
-	std::vector<int> m_F;//stari finale
+	std::vector<int> m_Q;
+	std::vector<char> m_Sum;
+	std::vector<std::tuple<int, char, int>> m_Delta;
+	uint16_t m_q0;
+	std::vector<int> m_F;
 	Graph m_graf;
 };

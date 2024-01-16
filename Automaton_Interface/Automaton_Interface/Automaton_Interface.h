@@ -50,8 +50,8 @@ class Automaton_Interface : public QMainWindow
 public:
     Automaton_Interface(QWidget* parent = nullptr);
     ~Automaton_Interface();
-    virtual void mouseReleaseEvent(QMouseEvent* e);//pui schimbarile facute de mouse
-    virtual void paintEvent(QPaintEvent* e);//iar aici este de ce afiseaza
+    virtual void mouseReleaseEvent(QMouseEvent* e);
+    virtual void paintEvent(QPaintEvent* e);
     virtual void mousePressEvent(QMouseEvent* e);
     virtual void mouseMoveEvent(QMouseEvent* e);
     QString openTextBox();
@@ -60,14 +60,13 @@ public:
     void highlightArc(Arch* arc, QColor color);
     void resetColors();
 public slots:
-    void on_deleteButton_clicked();  // Slot pentru gestionarea evenimentului de clic pe buton
-    void on_finalButton_clicked();  // Slot pentru gestionarea evenimentului de clic pe buton
-    void on_dragButton_clicked();  // Slot pentru gestionarea evenimentului de clic pe buton
-    void on_addFromFileButton_clicked(); // Slot pentru adaugarea unui automat dintr-un fisier
-    void on_saveToFileButton_clicked(); // Slot pentru salvarea unui automat intr-un fisier
+    void on_deleteButton_clicked(); 
+    void on_finalButton_clicked(); 
+    void on_dragButton_clicked(); 
+    void on_addFromFileButton_clicked(); 
+    void on_saveToFileButton_clicked(); 
     void on_testWordButton_clicked();
     void on_verifyWordsButton_clicked();
-    //Slot-uri pentru tipul obiectului
     void showAutomatonTypeDialog();
 
 private:
@@ -75,18 +74,18 @@ private:
     Node* firstNode;
     Graph graf;
     bool orientedGraph;
-    bool nodeIsBeingDragged;  // Folosit pentru a verifica daca un nod este în miscare
-    Node* draggedNode;        // Nodul care este tras
-    QPoint lastMousePos;      // Pozitia ultimei pozitii a mouse-ului in timpul tragerii
-    AutomatonType automatonType; //enum pt tipul automatului (am inlocuit APDMode cu asta!)
+    bool nodeIsBeingDragged;  
+    Node* draggedNode;       
+    QPoint lastMousePos;      
+    AutomatonType automatonType; 
     Automaton* automaton;
-    Automaton* toDrawAutomaton; //pt read from file
+    Automaton* toDrawAutomaton; 
     APD automatonPD;
-    APD toDrawAPD; //pt read from file
+    APD toDrawAPD; 
 
     bool dragMode;
     bool finalMode;
-    bool deleteMode;  // Variabila pentru a tine evidenta starii de stergere
+    bool deleteMode;  
 
     std::unordered_set<int> currentStates;
     int currentIndex;

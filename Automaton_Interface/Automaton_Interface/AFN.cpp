@@ -116,24 +116,24 @@ std::vector<int> AFN::getF() const
 
 bool AFN::verifyAutomaton()
 {
-	//Verific ca m_sizeQ si m_Sum sa fie nevide
+
 	if (m_sizeQ == 0 || m_sizeSum == 0 || m_sizeDelta == 0 || m_sizeF == 0)
 	{
 		return false;
 	}
-	//Verific daca m_q0 se afla in m_Q
+
 	auto it = std::find(m_Q.begin(), m_Q.end(), m_q0);
 	if (it == m_Q.end())
 	{
 		return false;
 	}
-	//Verifica daca elementele din m_F apartin lui m_Q
+
 	for (int i = 0; i < m_F.size(); i++)
 		if (std::find(m_Q.begin(), m_Q.end(), m_F[i]) == m_Q.end())
 		{
 			return false;
 		}
-	//Verifica daca elem lui m_Delta apartin lui m_Q,m_Sum,m_Q
+
 	for (int i = 0; i < m_sizeDelta; i++)
 		if (std::find(m_Q.begin(), m_Q.end(), std::get<0>(m_Delta[i])) == m_Q.end()
 			|| std::find(m_Sum.begin(), m_Sum.end(), std::get<1>(m_Delta[i])) == m_Sum.end()
@@ -222,17 +222,17 @@ void AFN::addFinalState(int state)
 
 bool AFN::checkWord(const std::unordered_set<int>& currentStates, const std::string& word, int currentIndex)
 {
-	//verific daca am parcurs cuvantul
+
 	if (currentIndex == word.size())
 	{
-		//verific daca e cel putin o stare finala in starile curente
+
 		for (int state : currentStates)
 
 			if (std::find(m_F.begin(), m_F.end(), state) != m_F.end())
 				return true;
 		return false;
 	}
-	//verific tranzitiile pentru caracterul curent,verific fiecare drum pe care are
+
 	std::unordered_set<int> nextState;
 	for (int currentState : currentStates)
 		for (auto transition : m_Delta)
@@ -242,7 +242,7 @@ bool AFN::checkWord(const std::unordered_set<int>& currentStates, const std::str
 				nextState.insert(std::get<2>(transition));
 
 		}
-	//apeleare a urmatorului caracter
+
 	return checkWord(nextState, word, currentIndex + 1);
 }
 
@@ -255,7 +255,7 @@ void AFN::readAutomaton(std::ifstream& file)
 	std::vector<int> int_vector;
 	std::vector<char> char_vector;
 	std::vector<std::tuple<int, char, int>> Delta_vector;
-	//citire dimensiune si elemente Q
+
 	file >> value;
 	m_sizeQ = value;
 	for (int i = 0; i < m_sizeQ; i++)
@@ -265,7 +265,7 @@ void AFN::readAutomaton(std::ifstream& file)
 	}
 	m_Q = int_vector;
 	int_vector.clear();
-	//citire dimensiune si elemente Sum
+
 	file >> value;
 	m_sizeSum = value;
 	for (int i = 0; i < m_sizeSum; i++)
@@ -275,7 +275,7 @@ void AFN::readAutomaton(std::ifstream& file)
 	}
 	m_Sum = char_vector;
 	char_vector.clear();
-	//citire dimensiune si elemente Delta
+
 	file >> value;
 	m_sizeDelta = value;
 	for (int i = 0; i < m_sizeDelta; i++)
@@ -285,10 +285,10 @@ void AFN::readAutomaton(std::ifstream& file)
 	}
 	m_Delta = Delta_vector;
 	Delta_vector.clear();
-	//citire stare initiala q0
+
 	file >> value;
 	m_q0 = value;
-	//citire dimensiune si elemente F
+
 	file >> value;
 	m_sizeF = value;
 	for (int i = 0; i < m_sizeQ; i++)

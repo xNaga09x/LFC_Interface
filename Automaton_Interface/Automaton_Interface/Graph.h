@@ -19,7 +19,7 @@ public:
     std::vector<Arch*>& getArches();
     std::vector<APDArch*>& getAPDArches();
     void addNode(QPoint p);
-    //void addArch(Arch *arc);
+
     void addArch(Node* firstNode, Node* secondNode, QString& label);
     void addAPDArch(Node* firstNode, Node* secondNode, std::vector<QString>& labels);
     void addArch(Node* firstNode, Node* secondNode);
@@ -48,4 +48,4 @@ public:
     }
 };
 
-#endif // GRAPH_H
+#endif
