@@ -38,27 +38,7 @@ public:
         return (it != nodes.end()) ? *it : nullptr;
     }
 
-   ///* Arch* getArcByNodes(const Node* sourceNode, const Node* targetNode) const {
-   //     auto it = std::find_if(arches.begin(), arches.end(),
-   //         [sourceNode, targetNode](const Arch* arc) {
-   //             return (arc->getFirstNode() == sourceNode && arc->getSecondNode() == targetNode);
-   //         });
-   //     return (it != arches.end()) ? *it : nullptr;
-   // }*/
-   // Arch* getArcByNodes(const Node* sourceNode, const Node* targetNode) const {
-   //     if (sourceNode == nullptr || targetNode == nullptr) {
-   //         // Nu avem noduri valide pentru c?utare, return?m nullptr
-   //         return nullptr;
-   //     }
-
-   //     auto it = std::find_if(arches.begin(), arches.end(),
-   //         [sourceNode, targetNode](const Arch* arc) {
-   //             return (arc->getFirstNode() == sourceNode && arc->getSecondNode() == targetNode);
-   //         });
-
-   //     // Return?m nullptr dac? nu g?sim arcul
-   //     return (it != arches.end()) ? *it : nullptr;
-   // }
+ 
     Arch* getArcByNodes(const Node* sourceNode, const Node* targetNode) const {
         auto it = std::find_if(arches.begin(), arches.end(),
             [sourceNode, targetNode](const Arch* arc) {

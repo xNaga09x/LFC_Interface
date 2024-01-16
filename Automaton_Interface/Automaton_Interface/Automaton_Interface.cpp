@@ -14,7 +14,6 @@ Automaton_Interface::Automaton_Interface(QWidget* parent)
 	finalMode = false;
 	deleteMode = false;
 	dragMode = false;
-	//connect(ui.deleteButton, &QPushButton::clicked, this, &AutomatonInterface::onButtonClicked);
 	currentStates.clear();
 	currentIndex = 0;
 	wordAccepted = false;
@@ -188,12 +187,11 @@ void Automaton_Interface::on_saveToFileButton_clicked()
 	else automatonPD.printAutomaton(file);
 	file.close();
 }
-// Adăugați implementarea acestor funcții în fișierul .cpp al clasei Automaton_Interface
+
 void Automaton_Interface::highlightNode(Node* node, QColor color)
 {
-	// Implementați schimbarea culorii pentru nodul dat
 	node->color = color;
-	update();  // Asigurați-vă că actualizați interfața grafică
+	update(); 
 }
 
 void Automaton_Interface::highlightArc(Arch* arc, QColor color)
@@ -214,6 +212,7 @@ void Automaton_Interface::resetColors()
 
 	update();  // Asigurați-vă că actualizați interfața grafică
 }
+
 void Automaton_Interface::on_testWordButton_clicked()
 {
 	QString label = openWordBox();
@@ -224,11 +223,9 @@ void Automaton_Interface::on_testWordButton_clicked()
 		if (automatonType == AutomatonType::AFDType)
 		{
 			// Automat de tip AFD
-			//label = openWordBox();
 			std::vector<Arch*>& arches = graf.getArches();
 			for (int i = 0; i < arches.size(); i++)
 				currentStates.insert(i);
-			//currentStates = { automaton->getq0() };
 			currentIndex = 0;
 			auto closestResults = dynamic_cast<AFD*>(automaton)->checkWordDetails(currentStates, label.toStdString(), currentIndex);
 			nodeAnimations.clear();
@@ -246,7 +243,6 @@ void Automaton_Interface::on_testWordButton_clicked()
 			archAnimation = !archAnimation;
 			for (int i = 0; i < arches.size(); i++)
 				currentStates.insert(i);
-			//currentStates = { automaton->getq0() };
 			std::string word = label.toStdString();
 			currentIndex = 0;
 
@@ -264,7 +260,6 @@ void Automaton_Interface::on_testWordButton_clicked()
 			label = openWordBox();
 			for (int i = 0; i < arches.size(); i++)
 				currentStates.insert(i);
-			//currentStates = { automaton->getq0() };
 			std::string word = label.toStdString();
 			currentIndex = 0;
 
@@ -293,11 +288,10 @@ void Automaton_Interface::on_testWordButton_clicked()
 			std::vector<Arch*>& arches = graf.getArches();
 			for (int i = 0; i < arches.size(); i++)
 				currentStates.insert(i);
-			//currentStates = { automaton->getq0() };
 			currentIndex = 0;
 			std::stack<char> currentStack;
 			std::vector<uint32_t> currentStatesVector(currentStates.begin(), currentStates.end());
-			bool verify = automatonPD.checkWord(automaton->getq0(), currentStack, word); //changes here
+			bool verify = automatonPD.checkWord(automaton->getq0(), currentStack, word);
 			if (verify)
 				QMessageBox::information(this, "Testare", "Cuvantul " + label + " este acceptat");
 			else
@@ -305,6 +299,7 @@ void Automaton_Interface::on_testWordButton_clicked()
 		}
 	}
 }
+
 void Automaton_Interface::on_verifyWordsButton_clicked()
 {
 	if (automatonType == AutomatonType::AFDType)
@@ -315,7 +310,6 @@ void Automaton_Interface::on_verifyWordsButton_clicked()
 		std::vector<Arch*>& arches = graf.getArches();
 		for (int i = 0; i < arches.size(); i++)
 			currentStates.insert(i);
-		//currentStates = { automaton->getq0() };
 		currentIndex = 0;
 		while (inputFile >> word)
 		{
@@ -336,7 +330,6 @@ void Automaton_Interface::on_verifyWordsButton_clicked()
 		std::vector<Arch*>& arches = graf.getArches();
 		for (int i = 0; i < arches.size(); i++)
 			currentStates.insert(i);
-		//currentStates = { automaton->getq0() };
 		currentIndex = 0;
 		while (inputFile >> word)
 		{
@@ -357,7 +350,6 @@ void Automaton_Interface::on_verifyWordsButton_clicked()
 		std::vector<Arch*>& arches = graf.getArches();
 		for (int i = 0; i < arches.size(); i++)
 			currentStates.insert(i);
-		//currentStates = { automaton->getq0() };
 		currentIndex = 0;
 		while (inputFile >> word)
 		{
@@ -393,215 +385,6 @@ void Automaton_Interface::on_verifyWordsButton_clicked()
 		outputFile.close();
 	}
 }
-//void Automaton_Interface::on_testWordButton_clicked()
-//{
-//	QString label = openWordBox();
-//	if (!label.isEmpty())
-//	{// Verificați tipul automatului
-//		 // Verificați tipul automatului
-//		// Verificați tipul automatului
-//		if (automatonType == AutomatonType::AFDType)
-//		{
-//			//currentStates = { automaton->getq0() };
-//			//currentIndex = 0;
-//			//wordAccepted = automaton->checkWord(currentStates, label.toStdString(), currentIndex);
-//
-//			//// Clear previous animations
-//			//resetColors();
-//
-//			//// Realizați animația
-//			//QTimer* animationTimer = new QTimer(this);
-//			//connect(animationTimer, &QTimer::timeout, [=]() {
-//			//	if (currentIndex < label.length())
-//			//	{
-//			//		int currentStateValue = *currentStates.begin();
-//			//		highlightNode(graf.getNodeByCoordinates(graf.getNodes()[currentStateValue]->getCoordinate()), QColor("green"));
-//
-//			//		std::unordered_set<int> nextStateSet;
-//			//		for (int currentState : currentStates)
-//			//		{
-//			//			std::unordered_set<int> tempState = { currentState };
-//			//			if (automaton->checkWord(tempState, label.toStdString(), currentIndex + 1))
-//			//			{
-//			//				int next = *tempState.begin();
-//			//				nextStateSet.insert(next);
-//			//			}
-//			//		}
-//
-//			//		if (!nextStateSet.empty())
-//			//		{
-//			//			int nextState = *nextStateSet.begin();
-//			//			highlightArc(graf.getArcByNodes(graf.getNodes()[currentStateValue], graf.getNodes()[nextState]), QColor("blue"));
-//			//			currentStates.clear();
-//			//			currentStates.insert(nextState);
-//			//			currentIndex++;
-//
-//			//			// Update the GUI
-//			//			update();
-//			//		}
-//			//		else
-//			//		{
-//			//			// Dacă nextStateSet este gol, cuvântul nu este acceptat
-//			//			animationTimer->stop();
-//			//			delete animationTimer;
-//
-//			//			// Afișați pop-up-ul cu rezultatul
-//			//			if (wordAccepted)
-//			//				QMessageBox::information(this, "Rezultat", "Cuvântul este acceptat!");
-//			//			else
-//			//				QMessageBox::warning(this, "Rezultat", "Cuvântul nu este acceptat!");
-//			//		}
-//			//	}
-//			//	else
-//			//	{
-//			//		// Cuvântul a fost procesat complet
-//			//		animationTimer->stop();
-//			//		delete animationTimer;
-//
-//			//		// Afișați pop-up-ul cu rezultatul
-//			//		if (wordAccepted)
-//			//			QMessageBox::information(this, "Rezultat", "Cuvântul este acceptat!");
-//			//		else
-//			//			QMessageBox::warning(this, "Rezultat", "Cuvântul nu este acceptat!");
-//			//	}
-//			//	});
-//
-//			//// Start the animation timer with a 2-second interval
-//			//animationTimer->start(2000);
-//			//animationTimer->setSingleShot(true); // Ensures that the timer stops after one shot
-//			//// Setează starea inițială
-//			//currentStates = { automaton->getq0() };
-//			//currentIndex = 0;
-//			//wordAccepted = automaton->checkWord(currentStates, label.toStdString(), currentIndex);
-//
-//			//// Verifică și afișează animația într-o fereastră separată
-//			//if (wordAccepted)
-//			//{
-//			//	/*AnimationInterface* animationInterface = new AnimationInterface(this);
-//			//	animationInterface->setLabel(label);
-//			//	animationInterface->show();
-//			//	animationInterface->startAnimation();*/
-//			//}
-//			//else
-//			//{
-//			//	QMessageBox::warning(this, "Rezultat", "Cuvântul nu este acceptat!");
-//			//}
-//		}
-//		else if (automatonType == AutomatonType::AFNType)
-//		{
-//			// Automat de tip AFN
-//			label = openWordBox();
-//		}
-//		else if (automatonType == AutomatonType::AFNLType)
-//		{
-//			// Automat de tip AFN_lambda
-//			label = openWordBox();
-//		}
-//		else if (automatonType == AutomatonType::APDType)
-//		{
-//			// Automat de tip APD
-//			label = openWordBox();
-//		}
-//	}
-//}
-
-//void Automaton_Interface::on_testWordButton_clicked()
-//{
-//	// Deschideți un dialog pentru introducerea cuvântului
-//	QString label = openWordBox();
-//	if (label.isEmpty()) {
-//		// Anulați dacă cuvântul este gol
-//		return;
-//	}
-//
-//	// Verificați tipul automatului
-//	if (automatonType == AutomatonType::AFDType) {
-//		// Setați starea inițială
-//		currentStates = { automaton->getq0() };
-//		currentIndex = 0;
-//		wordAccepted = automaton->checkWord(currentStates, label.toStdString(), currentIndex);
-//
-//		// Clear previous animations
-//		resetColors();
-//
-//		// Create and show a progress dialog
-//		QProgressDialog progressDialog("Testare cuvânt în curs...", "Anulare", 0, label.length(), this);
-//		progressDialog.setWindowModality(Qt::WindowModal);
-//		progressDialog.setMinimumDuration(0);  // Permiteți afișarea imediată
-//
-//		// Realizați animația
-//		while (currentIndex < label.length()) {
-//			int currentStateValue = *currentStates.begin();
-//			highlightNode(graf.getNodeByCoordinates(graf.getNodes()[currentStateValue]->getCoordinate()), QColor("green"));
-//
-//			std::unordered_set<int> nextStateSet;
-//			for (int currentState : currentStates) {
-//				std::unordered_set<int> tempState = { currentState };
-//				if (automaton->checkWord(tempState, label.toStdString(), currentIndex + 1)) {
-//					int next = *tempState.begin();
-//					nextStateSet.insert(next);
-//				}
-//			}
-//
-//			if (!nextStateSet.empty()) {
-//				int nextState = *nextStateSet.begin();
-//				Node* currentNode = graf.getNodes()[currentStateValue];
-//				Node* nextNode = graf.getNodes()[nextState];
-//
-//				// Verificați dacă există un arc între nodul curent și nodul următor
-//				Arch* arc = graf.getArcByNodes(currentNode, nextNode);
-//				if (arc) {
-//					// Dacă există, evidențiați arcul
-//					highlightArc(arc, QColor("blue"));
-//				}
-//				else {
-//					// Dacă nu există un arc, tratați această situație corespunzător (de exemplu, afișați un mesaj de eroare)
-//					qDebug() << "Arcul nu exista intre nodurile " << currentStateValue << " si " << nextState;
-//				}
-//
-//				currentStates.clear();
-//				currentStates.insert(nextState);
-//				currentIndex++;
-//
-//				// Update the GUI
-//				update();
-//				progressDialog.setValue(currentIndex);
-//				QCoreApplication::processEvents();  // Permiteți procesării evenimentelor pentru a răspunde la anulare
-//				QThread::msleep(2000);  // Pausează pentru 2 secunde
-//				resetColors();  // Resetați culorile
-//
-//				// Verificați dacă utilizatorul a anulat
-//				if (progressDialog.wasCanceled()) {
-//					progressDialog.reset();  // Resetare progres la valoarea inițială
-//					return;
-//				}
-//			}
-//			else {
-//				// Dacă nextStateSet este gol, cuvântul nu este acceptat
-//				wordAccepted = false;
-//				break;
-//			}
-//		}
-//
-//		// Afișați pop-up-ul cu rezultatul
-//		if (wordAccepted)
-//			QMessageBox::information(this, "Rezultat", "Cuvântul este acceptat!");
-//		else
-//			QMessageBox::warning(this, "Rezultat", "Cuvântul nu este acceptat!");
-//	}
-//	else if (automatonType == AutomatonType::AFNType) {
-//		// Automat de tip AFN
-//		// ... (Implementați tratamentul pentru tipul AFN)
-//	}
-//	else if (automatonType == AutomatonType::AFNLType) {
-//		// Automat de tip AFN_lambda
-//		// ... (Implementați tratamentul pentru tipul AFN_lambda)
-//	}
-//	else if (automatonType == AutomatonType::APDType) {
-//		// Automat de tip APD
-//		// ... (Implementați tratamentul pentru tipul APD)
-//	}
-//}
 
 void Automaton_Interface::showAutomatonTypeDialog()
 {
@@ -630,10 +413,7 @@ void Automaton_Interface::showAutomatonTypeDialog()
 
 void Automaton_Interface::mouseReleaseEvent(QMouseEvent* e)
 {
-	//if (nodeIsBeingDragged) {
-	//	nodeIsBeingDragged = false;
-	//	draggedNode = nullptr;
-	//}
+
 	if (e->button() == Qt::RightButton)
 	{
 		// Verificati suprapunerea cu nodurile existente
@@ -811,13 +591,6 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 		p.drawText(r, Qt::AlignCenter, s);
 		if (nodeAnimation && std::find(nodeAnimations.begin(), nodeAnimations.end(), n) != nodeAnimations.end())
 		{
-			//QPen innerPen(Qt::blue); // Culoarea și grosimea conturului cercului interior
-			//innerPen.setWidth(2);
-			//p.setPen(innerPen);
-			//if(std::find(nodeAnimations.begin(),nodeAnimations.end(),n)!=nodeAnimations.end())
-			//	p.drawEllipse(r);
-			//QString s = "q" + QString::number(n->getValue());
-			//p.drawText(r, Qt::AlignCenter, s);
 			QRect outerRect(n->getX() - 15, n->getY() - 15, 30, 30); // Dimensiunile cercului exterior
 			QRect r(n->getX() - 10, n->getY() - 10, 20, 20);//xr=xnode-10 yr=yn-10 si dim dreptunghiului
 			if (n->getFinalState())
@@ -865,7 +638,6 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 	{
 		for (Arch* a : arches)//desenam linie intre coordonatele primului si al doilea nod
 		{	//Cazul in care avem arc de la un nod la el insusi
-		//Cazul in care avem arc de la un nod tot la el
 			if (a->getFirstNode()->getValue() == a->getSecondNode()->getValue())
 			{
 				Node* n = a->getFirstNode();
@@ -1021,10 +793,6 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 					QStringList elements = a->getElements();
 					int elementY = middle.y() - 5;
 
-					//Aici am pus doar indexul fiecarui arc(se vor pune mai incolon elementle din vector)
-					//QRect reprezinta un dreptunghi in coordonatele dreptunghiului de pe ecran
-					//Reprezinta pozitia unui obiect intr-o fereastra(acesta il folosesc pentru a insera elementele)
-					//int index = std::distance(arches.begin(), std::find(arches.begin(), arches.end(), a));
 					QRect elementRect(middle.x() - 5, elementY + 15, 10, 10);//crearea patratului coordonatele de pe stanga si dreapta,latimea si inaltimea dreptunghiului
 					p.drawText(elementRect, Qt::AlignCenter, a->getLabel());//element);
 					elementY += 15;//Spatiile intre elemente
@@ -1137,12 +905,10 @@ void Automaton_Interface::paintEvent(QPaintEvent* e)//aici creeam noduri
 					elementY += 15;
 				}
 
-				//}
 				if (firstNode)
 				{
 					QRect r(firstNode->getX() - 10, firstNode->getY() - 10, 20, 20);
 					QPen pen;
-					//pen.setColor(Qt::red);
 					pen.setWidth(2);
 					p.setPen(pen);
 					p.drawEllipse(r);

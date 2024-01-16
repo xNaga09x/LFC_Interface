@@ -16,13 +16,10 @@ public:
     void setY(int y) { this->y = y; }
     void setValue(int value);
     void setCoordinate(QPoint);
-    //    void setX(int x);
-    //    void setY(int y);
-    //    void setCoordinate(int x, int y);
     int getValue();
     QPoint getCoordinate() const
     {
-        return coordinate; //if drag returns access violation
+        return coordinate;
     }
     int getId() const {
         return value;

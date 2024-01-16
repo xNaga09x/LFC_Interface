@@ -15,7 +15,6 @@ WordBox::WordBox(QWidget* parent)
     layout->addWidget(okButton);
 
     setLayout(layout);
-    // Ad?uga?i conexiune pentru interceptarea evenimentului de ap?sare a tastei Enter
     connect(m_lineEdit, &QLineEdit::returnPressed, this, &WordBox::onReturnPressed);
 }
 

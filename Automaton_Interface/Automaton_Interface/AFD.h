@@ -54,14 +54,11 @@ public:
 	//trebuie pusa pentru a elimina conflictul dintre checkWord si checkWordLambda,fiind doua functii diferite
 	bool checkWordLambda(const std::string& word) override
 	{
-		// Poate implementa o eroare aici sau lasa nedefinita
 		return false;
 	}
 	//verificare utilizand BackTracking (currentStates reprezinta starile de cuvinte,deoarece pot exista mai multe
 	//stari intr-un moment,word e cuv dat,iar currentIndex e litera curenta din cuvant)
 	bool checkWord(const std::unordered_set<int>& currentStates, const std::string& word, int currentIndex);
-	/*std::pair<std::vector<Node*>, std::vector<Arch*>> checkWord1(const std::unordered_set<int>& currentStates,
-		const std::string& word, int currentIndex);*/
 	std::pair<std::unordered_set<Node*>, std::unordered_set<Arch*>> checkWordDetails(const std::unordered_set<int>& 
 		currentStates, const std::string& word, int currentIndex);
 	void readAutomaton(std::ifstream& file);

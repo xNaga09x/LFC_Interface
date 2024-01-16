@@ -255,43 +255,7 @@ bool AFD::checkWord(const std::unordered_set<int>& currentStates, const std::str
 	//apeleare a urmatorului caracter
 	return checkWord(nextState, word, currentIndex + 1);
 }
-// Implementation of the updated checkWord function
-//std::pair<std::unordered_set<Node*>, std::unordered_set<Arch*>> AFD::checkWordDetails(const std::unordered_set<int>& currentStates,
-//	const std::string& word, int currentIndex) 
-//{
-//	std::pair<std::unordered_set<Node*>, std::unordered_set<Arch*>> result;
-//
-//	if (currentIndex == word.size()) {
-//		// Check if there is at least one final state in the current states
-//		for (int state : currentStates) {
-//			if (std::find(m_F.begin(), m_F.end(), state) != m_F.end()) {
-//				result.first.insert(m_graf.getNodeById(state));
-//				return result;
-//			}
-//		}
-//		return result;
-//	}
-//
-//	// Check transitions for the current character, check each possible path
-//	std::unordered_set<int> nextState;
-//	for (int currentState : currentStates) {
-//		for (auto transition : m_Delta) {
-//			if (std::get<0>(transition) == currentState && (std::get<1>(transition) == word[currentIndex] || std::get<1>(transition) == '\0')) {
-//				nextState.insert(std::get<2>(transition));
-//				result.second.insert(m_graf.getArcByNodes(m_graf.getNodeById(currentState), m_graf.getNodeById(std::get<2>(transition))));
-//			}
-//		}
-//	}
-//
-//	// Recursive call for the next character
-//	auto nextResult = checkWordDetails(nextState, word, currentIndex + 1);
-//
-//	// Merge the intermediate results
-//	result.first.insert(nextResult.first.begin(), nextResult.first.end());
-//	result.second.insert(nextResult.second.begin(), nextResult.second.end());
-//
-//	return result;
-//}
+
 std::pair<std::unordered_set<Node*>, std::unordered_set<Arch*>> AFD::checkWordDetails(const std::unordered_set<int>& currentStates,
 	const std::string& word, int currentIndex)
 {

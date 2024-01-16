@@ -43,16 +43,13 @@ void Graph::addNode(QPoint p)
     n->setCoordinate(p);
     n->setValue(nodes.size());
 
-    // Ad?uga?i noul nod în lista de noduri
     nodes.push_back(n);
 
-    // Extinde?i matricea de adiacen?? cu o nou? linie ?i o nou? coloan? cu zero-uri pentru noul nod
     size_t numNodes = nodes.size();
 }
 //Pentru punctul 3
 bool Graph::isArcUnique(Node* source, Node* target)
 {
-    // Verifica?i dac? arcul nu exist? deja
     for (Arch* arc : arches)
     {
         if (arc->getFirstNode() == source && arc->getSecondNode() == target)
@@ -68,7 +65,6 @@ bool Graph::arcExists(Node* node1, Node* node2) const
     {
         if (a->getFirstNode() == node1 && a->getSecondNode() == node2)
         {
-            // Verifica?i dac? exist? un arc de la node1 la node2
             return true;
         }
     }
@@ -76,13 +72,10 @@ bool Graph::arcExists(Node* node1, Node* node2) const
 }
 void Graph::addArch(Node* firstNode, Node* secondNode)
 {
-    // Verifica?i dac? arcul este unic ?i ad?uga?i-l
     if (isArcUnique(firstNode, secondNode))
     {
         Arch* arc = new Arch(firstNode, secondNode);
         arc->addElement("A");
-        /*arc->addElement("B");
-        arc->addElement("C");*/
         arches.push_back(arc);
     }
 }
@@ -118,7 +111,6 @@ void Graph::removeNode(Node* node)
     {
         if ((*it1)->getFirstNode() == node || (*it1)->getSecondNode() == node)
         {
-            //delete* it1;
             it1 = arches.erase(it1);
         }
         else
